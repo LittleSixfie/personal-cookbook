@@ -1,10 +1,13 @@
 import express from 'express'
-import router from './routes/recipes.js'
+import routerRecipe from './routes/recipes.js'
+import routerIngridient from './routes/ingridients.js'
+
 
 const app = express();
 
 app.use(express.json());
-app.use('/recipes', router);
+app.use('/recipes', routerRecipe);
+app.use('/ingridients', routerIngridient);
 
 app.get('/', (req, res) => {
     res.send('Node.js is working!');
