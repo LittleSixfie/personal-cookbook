@@ -14,11 +14,11 @@ async function connectDB() {
     return dbClient
 }
 
-const ingridientController = {
-    getAllIngridients: async (req, res) => {
+const ingridientListController = {
+    getAllIngridientsList: async (req, res) => {
         let dbClient = await connectDB()
         try {
-            const queryResult = await dbClient.query('SELECT * FROM ingrediente')
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes')
             res.json(queryResult.rows);
         } catch (err) {
             console.error(err);
@@ -26,11 +26,11 @@ const ingridientController = {
             await dbClient.end()
         }
     },
-    getIngridientById: async (req, res) => {
+    getIngridientListById: async (req, res) => {
         const itemId = req.params.id;
         let dbClient = await connectDB()
         try {
-            const queryResult = await dbClient.query('SELECT * FROM ingrediente WHERE id=$1', [itemId])
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
             console.error(err);
@@ -38,12 +38,12 @@ const ingridientController = {
             await dbClient.end()
         }
     },
-    createIngridient: async (req, res) => {
+    createIngridientList: async (req, res) => {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
             console.log(requestData)
-            const queryResult = await dbClient.query('INSERT INTO ingrediente( nombre, unidades )VALUES ($1,$2)', [requestData['nombre'], requestData['unidades']])
+            const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3)', [requestData['idreceta'], requestData['idingrediente'], requestData['cantidad']])
             res.json(queryResult);
         } catch (err) {
             console.error(err);
@@ -51,12 +51,12 @@ const ingridientController = {
             await dbClient.end()
         }
     },
-    updateIngridient: async (req, res) => {
+    updateIngridientList: async (req, res) => {
         //TODO: Literalmente hacerlo.
         const itemId = req.params.id;
         let dbClient = await connectDB()
         try {
-            const queryResult = await dbClient.query('UPDATE ingrediente SET salario = 50000 WHERE id_empleado = 100;', [itemId])
+            const queryResult = await dbClient.query('UPDATE lista_ingredientes SET salario = 50000 WHERE id_empleado = 100;', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
             console.error(err);
@@ -64,11 +64,11 @@ const ingridientController = {
             await dbClient.end()
         }
     },
-    deleteIngridient: async (req, res) => {
+    deleteIngridientList: async (req, res) => {
         const itemId = req.params.id;
         let dbClient = await connectDB()
         try {
-            const queryResult = await dbClient.query('DELETE FROM ingrediente WHERE id=$1', [itemId])
+            const queryResult = await dbClient.query('DELETE FROM lista_ingredientes WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
             console.error(err);
@@ -78,4 +78,4 @@ const ingridientController = {
     },
 };
 
-export default ingridientController
+export default ingridientListController
