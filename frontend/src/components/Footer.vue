@@ -1,5 +1,5 @@
 <template>
-    <v-footer>fgdfgd</v-footer>
+    <h1>fgdfgd</h1>
 </template>
 
 <script>
