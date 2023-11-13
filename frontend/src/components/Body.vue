@@ -2,7 +2,7 @@
     <h1>Body</h1>
     <v-card title="Card title" subtitle="Subtitle" text="..." variant="tonal">
         <v-card-actions>
-            <v-btn  @click="created()" prepend-icon="$vuetify" elevation="12">
+            <v-btn  @click="burron" prepend-icon="$vuetify" elevation="12">
                 Cargar
             </v-btn>
         </v-card-actions> 
@@ -11,8 +11,9 @@
     <div>
     <ul v-if="posts && posts.length">
       <li v-for="post of posts">
-        <p><strong>{{post.title}}</strong></p>
-        <p>{{post.body}}</p>
+        <p><strong>{{post.id}}</strong></p>
+        <p>{{post.title_name}}</p>
+        <p>{{post.nombre}}</p>
       </li>
     </ul>
 
@@ -25,10 +26,10 @@
     
     <v-list lines="one">
         <v-list-item
-            v-for="n in 3"
-            :key="n"
-            :title="'Item ' + n"
-            subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit"
+            v-for="post in posts"
+            :key="post"
+            :title="'Item ' + post.id"
+            :subtitle='post.title_name + post.nombre'
         ></v-list-item>
     </v-list>
 </template>
@@ -36,20 +37,19 @@
 <script>
     import axios from "axios";
     import { ref } from 'vue'
-
     const count = ref("")
-    
-    async function created() {
+    export default {
+        name: 'Body',
+        methods: {
+          async burron() {
             try {
-              const response = await axios.get(`http://jsonplaceholder.typicode.com/posts`)
+              const response = await axios.get(`http://localhost:3000/ingridients`)
               this.posts = response.data
             } catch (e) {
               this.errors.push(e)
             }
           }
-            
-    export default {
-        name: 'Body',
+        },
         data() {
             return {
               posts: [],
@@ -60,12 +60,15 @@
           // Fetches posts when the component is created.
           async created() {
             try {
-              const response = await axios.get(`http://jsonplaceholder.typicode.com/posts`)
+              const response = await axios.get(`http://192.168.1.146:3000/recipes`)
               this.posts = response.data
+              
             } catch (e) {
+              alert(e)
               this.errors.push(e)
             }
-          }
+          },
+        
     }
 </script>
 

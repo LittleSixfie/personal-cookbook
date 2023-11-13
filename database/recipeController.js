@@ -11,6 +11,7 @@ async function connectDB() {
         password: process.env.DB_PASS,
     });
     await dbClient.connect()
+    console.log("connected")
     return dbClient
 }
 
