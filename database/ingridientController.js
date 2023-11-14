@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 async function connectDB() {
     const dbClient = new pg.Client({
-        host: process.env.DB_HOST,
+        host: process.env.HOST,
         port: 5432,
         database: process.env.DB_NAME,
         user: process.env.DB_USER,

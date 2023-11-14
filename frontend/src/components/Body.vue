@@ -43,7 +43,7 @@
         methods: {
           async burron() {
             try {
-              const response = await axios.get(`http://localhost:3000/ingridients`)
+              const response = await axios.get(`http://3.67.196.185:3000/ingridients`)
               this.posts = response.data
             } catch (e) {
               this.errors.push(e)
@@ -60,11 +60,11 @@
           // Fetches posts when the component is created.
           async created() {
             try {
-              const response = await axios.get(`http://192.168.1.146:3000/recipes`)
+              const response = await axios.get(`http://3.67.196.185:3000/recipes`)
               this.posts = response.data
               
             } catch (e) {
-              alert(e)
+              alert(e.response)
               this.errors.push(e)
             }
           },
