@@ -19,7 +19,7 @@ const ingridientController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('SELECT * FROM ingrediente')
-            res.json(queryResult.rows);
+            res.json(queryResult);
         } catch (err) {
             console.error(err);
         } finally {
@@ -42,7 +42,6 @@ const ingridientController = {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
-            console.log(requestData)
             const queryResult = await dbClient.query('INSERT INTO ingrediente( nombre, unidades )VALUES ($1,$2)', [requestData['nombre'], requestData['unidades']])
             res.json(queryResult);
         } catch (err) {

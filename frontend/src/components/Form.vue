@@ -66,21 +66,28 @@
         }),
         methods: {
             async addIngredient() {
-            
                 console.log(this.ingridientsList[0],this.valid)
-            
-            if(this.nombre != "" && this.unidades != ""){
                 this.loading = true
                 try {
-                    const response = await axios.post(`http://192.168.1.146:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
-                    this.posts = response.data
+                    const responseRecipe = await axios.post(`http://192.168.1.146:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
+                    //this.posts.push(responseRecipe.data)
+                    console.log(responseRecipe.data)
+                    this.ingridientsList.forEach(async element => {
+                        try{
+                            console.log(element)
+                            const responseIngredients = await axios.post(`http://192.168.1.146:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
+                            //this.posts.push(responseIngredients.data)
+                            console.log(responseIngredients.data)
+                        } catch(e) {
+                            alert(e)
+                        }
+                    })
+                    
                 } catch (e) {
                     alert(e)
                 }
                 this.loading = false
-            } else {
-                alert("empty puto")
-            }
+            
             },
             addRow() {
                 console.log("added");

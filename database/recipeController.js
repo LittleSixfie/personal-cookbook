@@ -20,7 +20,7 @@ const recipeController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('SELECT * FROM recipe')
-            res.json(queryResult.rows);
+            res.json(queryResult.rows[0].data);
         } catch (err) {
             console.error(err);
         } finally {
