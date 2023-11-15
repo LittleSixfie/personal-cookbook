@@ -20,7 +20,7 @@ const recipeController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('SELECT * FROM recipe')
-            res.json(queryResult.rows[0].data);
+            res.json(queryResult.rows);
         } catch (err) {
             console.error(err);
         } finally {
@@ -43,10 +43,15 @@ const recipeController = {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
-            const queryResult = await dbClient.query('INSERT INTO recipe( title_name, instructions, origin )VALUES ($1,$2,$3)', [requestData['title_name'], requestData['instructions'], requestData['origin']])
+            const queryResult = await dbClient.query('INSERT INTO recipe( title_name, instructions, origin )VALUES ($1,$2,$3) RETURNING id', [requestData['title_name'], requestData['instructions'], requestData['origin']])
+            res.status(201)
             res.json(queryResult);
         } catch (err) {
             console.error(err);
+            if(err.code == 23505){
+                res.status(400)
+                res.send(`The recipe already exits with id: ${(await dbClient.query('SELECT id FROM recipe WHERE title_name=$1', [req.body['title_name']])).rows[0].id}`)   
+            }
         } finally {
             await dbClient.end()
         }

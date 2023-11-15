@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer">
-      <!-- <Form></Form> -->
+     <Form></Form>
     </v-navigation-drawer>
 
     <v-app-bar>
@@ -12,8 +12,7 @@
 
     <v-main>
       <!--  -->
-      <!-- <Body /> -->
-      <Form />
+       <Body /> 
     </v-main>
   </v-app>
 </template>

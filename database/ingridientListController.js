@@ -43,7 +43,8 @@ const ingridientListController = {
         try {
             const requestData = req.body; 
             console.log(requestData)
-            const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3)', [requestData['idreceta'], requestData['idingrediente'], requestData['cantidad']])
+            const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3) RETURNING id', [requestData['idRecipe'], requestData['idIngridient'], requestData['quantity']])
+            res.status(201)
             res.json(queryResult);
         } catch (err) {
             console.error(err);

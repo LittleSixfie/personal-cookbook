@@ -28,7 +28,7 @@
                 <v-text-field
                     v-model="item.quantity"
                     :rules="justNumbers"
-                    label="Ingredient"
+                    label="Quantity"
                 ></v-text-field>
                 <v-combobox
                     v-model="item.measurement"
@@ -66,28 +66,27 @@
         }),
         methods: {
             async addIngredient() {
-                console.log(this.ingridientsList[0],this.valid)
                 this.loading = true
+                
                 try {
-                    const responseRecipe = await axios.post(`http://192.168.1.146:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
-                    //this.posts.push(responseRecipe.data)
-                    console.log(responseRecipe.data)
-                    this.ingridientsList.forEach(async element => {
+                    const responseRecipe = await axios.post(`http://3.76.37.239:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
+                    console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
+                    //if (responseRecipe.status == 400) throw 'This recipe already exists'
+                    await this.ingridientsList.forEach(async element => {
                         try{
-                            console.log(element)
-                            const responseIngredients = await axios.post(`http://192.168.1.146:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
-                            //this.posts.push(responseIngredients.data)
-                            console.log(responseIngredients.data)
+                            const responseIngredient = await axios.post(`http://3.76.37.239:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
+                            console.log("INGREDIENTE SUELTO", responseIngredient.data)
+                            const responseListIngredients = await axios.post(`http://3.76.37.239:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity});
+                            console.log("INGREDIENTE LISTA", responseListIngredients.data)
                         } catch(e) {
                             alert(e)
                         }
                     })
-                    
                 } catch (e) {
-                    alert(e)
+                    alert(e.response.data)
                 }
+                
                 this.loading = false
-            
             },
             addRow() {
                 console.log("added");
