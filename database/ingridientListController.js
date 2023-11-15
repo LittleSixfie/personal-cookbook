@@ -38,6 +38,30 @@ const ingridientListController = {
             await dbClient.end()
         }
     },
+    getIngridientListByIngridientId: async (req, res) => {
+        const itemId = req.params.id;
+        let dbClient = await connectDB()
+        try {
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idingrediente=$1', [itemId])
+            res.json(queryResult.rows);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            await dbClient.end()
+        }
+    },
+    getIngridientListByRecipeId: async (req, res) => {
+        const itemId = req.params.id;
+        let dbClient = await connectDB()
+        try {
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idreceta=$1', [itemId])
+            res.json(queryResult.rows);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            await dbClient.end()
+        }
+    },
     createIngridientList: async (req, res) => {
         let dbClient = await connectDB()
         try {

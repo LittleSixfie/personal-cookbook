@@ -1,20 +1,20 @@
 <template>
     <h1>Body</h1>
     <v-main>
-      <v-btn @click="burron">boton</v-btn>
       <v-text-field>{{chipFilter.length}}</v-text-field>
       <v-container>
         <v-chip-group
-        cols="12"
-        multiple
-        v-model="chipFilter"
+          cols="12"
+          multiple
+          v-model="chipFilter"
         >
-         <v-chip
-           v-for="n in ingridients"
-           :key="n"
-           filter
-         > {{n.nombre}}</v-chip>
+          <v-chip
+            v-for="n in ingridients"
+            :key="n"
+            filter
+          > {{n.nombre}}</v-chip>
         </v-chip-group>
+        <v-btn @click="burron">boton</v-btn>
       </v-container>
       
       <v-container>
@@ -25,7 +25,7 @@
             cols="4"
           >
             <v-card height="200"
-             :title="n.title_name"
+              :title="n.title_name"
             >
             <v-card-text class="d-inline-block text-overflow-ellipses" >{{n.instructions}} </v-card-text>
             </v-card>
@@ -33,7 +33,7 @@
         </v-row>
       </v-container>
       <!--
-       <v-list lines="one">
+      <v-list lines="one">
         <v-list-item
             v-for="post in posts"
             :key="post"
@@ -55,12 +55,21 @@
         methods: {
           async burron() {
             try {
-              console.log(this.chipFilter)
+              //TODO: REVISAR EL COMPORTAMIENTO DE ESTOQ UE NO ME CONVENcE DEL TODO
               
-              //const response = await axios.get(`http://3.76.37.239:3000/ingridients`)
-              //this.posts = response.data
+              const newRecipes=this.recipes
+              for(const chip of this.chipFilter) {
+                const response = await axios.get(`http://localhost:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`)
+                console.log("response", response.data)
+                for(const idReceta in response.data){
+                  this.recipes = newRecipes.filter(element3 => idReceta.idreceta == element3.id)
+                  //newRecipes.push(temp)
+                }
+              }
+              this.recipes 
+              console.log(newRecipes)
             } catch (e) {
-              this.errors.push(e)
+              alert(e)
             }
           }
         },
@@ -73,13 +82,12 @@
               counter: 0,
             }
           },
-        
           // Fetches posts when the component is created.
           async created() {
             try {
-              const responseAllRecipes = await axios.get(`http://3.76.37.239:3000/recipes`)
+              const responseAllRecipes = await axios.get(`http://localhost:3000/recipes`)
               this.recipes = responseAllRecipes.data
-              const responseAllIngridients = await axios.get(`http://3.76.37.239:3000/ingridients`)
+              const responseAllIngridients = await axios.get(`http://localhost:3000/ingridients`)
               this.ingridients = responseAllIngridients.data
             } catch (e) {
               alert(e.response)

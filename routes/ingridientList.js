@@ -11,6 +11,12 @@ routerIngridientList.post('/add', ingridientListController.createIngridientList)
 // Define a route for getting a single item by ID
 routerIngridientList.get('/:id', ingridientListController.getIngridientListById);
 
+// Define a route for getting a single item by ID
+routerIngridientList.get('/ingridient/:id', ingridientListController.getIngridientListByIngridientId);
+
+// Define a route for getting a single item by ID
+routerIngridientList.get('/recipe/:id', ingridientListController.getIngridientListByRecipeId);
+
 // Edit a entry of an object
 routerIngridientList.put('/:id', ingridientListController.updateIngridientList);
 
