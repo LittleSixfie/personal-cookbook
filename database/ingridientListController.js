@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 async function connectDB() {
     const dbClient = new pg.Client({
-        host: process.env.DB_HOST,
+        host: process.env.HOST,
         port: 5432,
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
@@ -38,12 +38,36 @@ const ingridientListController = {
             await dbClient.end()
         }
     },
+    getIngridientListByIngridientId: async (req, res) => {
+        const itemId = req.params.id;
+        let dbClient = await connectDB()
+        try {
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idingrediente=$1', [itemId])
+            res.json(queryResult.rows);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            await dbClient.end()
+        }
+    },
+    getIngridientListByRecipeId: async (req, res) => {
+        const itemId = req.params.id;
+        let dbClient = await connectDB()
+        try {
+            const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idreceta=$1', [itemId])
+            res.json(queryResult.rows);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            await dbClient.end()
+        }
+    },
     createIngridientList: async (req, res) => {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
-            console.log(requestData)
-            const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3)', [requestData['idreceta'], requestData['idingrediente'], requestData['cantidad']])
+            const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3) RETURNING id', [requestData['idRecipe'], requestData['idIngridient'], requestData['quantity']])
+            res.status(201)
             res.json(queryResult);
         } catch (err) {
             console.error(err);
@@ -69,7 +93,7 @@ const ingridientListController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('DELETE FROM lista_ingredientes WHERE id=$1', [itemId])
-            res.json(queryResult.rows);
+            res.json(queryResult);
         } catch (err) {
             console.error(err);
         } finally {

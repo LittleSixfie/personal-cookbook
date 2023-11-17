@@ -4,7 +4,7 @@ import 'dotenv/config'
 
 async function connectDB() {
     const dbClient = new pg.Client({
-        host: process.env.DB_HOST,
+        host: process.env.HOST,
         port: 5432,
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
@@ -42,11 +42,15 @@ const ingridientController = {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
-            console.log(requestData)
-            const queryResult = await dbClient.query('INSERT INTO ingrediente( nombre, unidades )VALUES ($1,$2)', [requestData['nombre'], requestData['unidades']])
+            const queryResult = await dbClient.query('INSERT INTO ingrediente( nombre, unidades )VALUES ($1,$2) RETURNING id', [requestData['nombre'], requestData['unidades']])
+            res.status(201)
             res.json(queryResult);
         } catch (err) {
             console.error(err);
+            if(err.code == 23505){
+                res.status(208)
+                res.json(await dbClient.query('SELECT id FROM ingrediente WHERE nombre=$1', [req.body['nombre']]))   
+            }
         } finally {
             await dbClient.end()
         }
