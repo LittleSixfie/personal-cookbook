@@ -1,5 +1,4 @@
 <template>
-    <DialogRecipe></DialogRecipe>
     <v-main>      
       <v-row justify="center">
         <v-col cols="11">
@@ -46,9 +45,19 @@
 <script>
   import axios from "axios";
   import CardRecipe from "./CardRecipe.vue";
-  import DialogRecipe from "./DialogRecipe.vue"
   export default {
     name: "Body",
+    data() {
+      return {
+        recipes: [],
+        ingridients: [],
+        chipFilter: [],
+        errors: [],
+      };
+    },
+    components: {
+      CardRecipe
+    },
     methods: {
       async burron() {
         try {
@@ -56,12 +65,9 @@
           const newRecipes = [];
           for (const chip of this.chipFilter) {
             const response = await axios.get(`http://localhost:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`);
-            console.log("response", response);
             for (const idReceta of response.data) {
-              console.log(idReceta);
               newRecipes.push(this.recipes.find(element => element.id == idReceta.idreceta));
             }
-            console.log("vuelta nuevas recetas", newRecipes);
           }
           this.recipes = newRecipes;
         } catch (e) {
@@ -79,30 +85,16 @@
         }
       }
     },
-    data() {
-      return {
-        recipes: [],
-        ingridients: [],
-        chipFilter: [],
-        errors: [],
-      };
-    },
-    // Fetches posts when the component is created.
     async created() {
       try {
         const responseAllRecipes = await axios.get(`http://localhost:3000/recipes`);
         this.recipes = responseAllRecipes.data;
         const responseAllIngridients = await axios.get(`http://localhost:3000/ingridients`);
         this.ingridients = responseAllIngridients.data;
-        console.log(this.recipes)
       } catch (e) {
         alert(e.response);
         this.errors.push(e);
       }
-    },
-    components: {
-      CardRecipe,
-      DialogRecipe
     }
   }
 </script>

@@ -9,14 +9,7 @@
             {{recipe.title_name}}
         </v-card-title>
         <v-card-actions>
-            <v-btn
-                class="ms-2"
-                @click=""
-                color="orange-lighten-2"
-                variant="text"
-            >
-                Receta completa
-            </v-btn>
+            <DialogRecipe :recipe="recipe"></DialogRecipe>
         </v-card-actions>
     </v-card>
 </template>
@@ -28,6 +21,11 @@
         props: ['recipe'],
         components:{
             DialogRecipe
+        },
+        data(){
+            return {
+
+            }
         }
     }
 </script>
