@@ -1,5 +1,4 @@
 <template>
-    <h1>Add Recipe</h1>
     <v-sheet width="80%" class="mx-auto">
         <v-form validate-on="input"  v-model="valid" @submit.prevent>
             <v-text-field
@@ -52,7 +51,6 @@
             instructions: '',
             origin: '',
             loading: false,
-            posts: [],
             ingridientsList: [{ ingridientName: "", measurement: "", quantity: 0 }],
             valid : true,
             rules: [
@@ -71,7 +69,6 @@
                 try {
                     const responseRecipe = await axios.post(`http://localhost:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
                     console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
-                    //if (responseRecipe.status == 400) throw 'This recipe already exists'
                     await this.ingridientsList.forEach(async element => {
                         try{
                             const responseIngredient = await axios.post(`http://localhost:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});

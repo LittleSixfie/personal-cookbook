@@ -1,27 +1,50 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer">
-     <Form></Form>
-    </v-navigation-drawer>
-
-    <v-app-bar>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      
+    <v-app-bar class="pa-3 bg-primary">
       <v-app-bar-title>Application</v-app-bar-title>
+
+        <v-dialog
+          v-model="dialog"
+          fullscreen
+          :scrim="false"
+          transition="dialog-bottom-transition"
+        >
+          <template v-slot:activator="{ props }">
+            <v-btn
+              variant="elevated"
+              icon
+              dark
+              v-bind="props"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-toolbar
+              dark
+              color="primary"
+            >
+              <v-btn
+                icon
+                dark
+                @click="dialog = false"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+              <v-toolbar-title>Add Recipe</v-toolbar-title>
+              <v-spacer></v-spacer>
+            </v-toolbar>
+            <Form />
+          </v-card>
+      </v-dialog>
     </v-app-bar>
 
     <v-main>
       <!--  -->
-       <Body /> 
+      <Body /> 
     </v-main>
   </v-app>
 </template>
-
-<script setup>
-  import { ref } from 'vue'
-
-  const drawer = ref(null)
-</script>
 
 <script>
 import Footer from './components/Footer.vue'
@@ -40,7 +63,7 @@ import Form from './components/Form.vue'
 
 export default {
   name: 'App',
-  data: () => ({ drawer: null }),
+  data: () => ({  dialog:false}),
   components: {
     Footer,
     Header,
