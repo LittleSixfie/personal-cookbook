@@ -1,3 +1,4 @@
+//todo: Se puede fraccionar en varios componenetes seguramente
 <template>
     <div class="text-center">
         <v-btn
@@ -44,13 +45,37 @@
                 </v-list>
                 <v-card-actions>
                     <v-btn 
-                        color="primary" block @click="dialog = false"
+                        color="primary"  @click="dialog = false"
                     >
                         Close Dialog
+                    </v-btn>
+                    <v-btn 
+                        color="primary"  @click="dialogRemove = true"
+                    >
+                        Remove recipe
                     </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog
+            v-model="dialogRemove"
+            width="auto"
+            persistent
+        >
+            <v-card :loading="loadingRemove">
+            <v-card-title>
+                Are you sure?
+            </v-card-title>
+            <v-card-subtitle>
+                This recipe will be lost forever
+            </v-card-subtitle>
+            <v-card-actions>
+                <v-btn color="primary" @click="removeRecipe">Yes</v-btn>
+                <v-btn color="primary" @click="dialogRemove = false">No</v-btn>
+            </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         </v-btn>
     </div>
 </template>
@@ -59,14 +84,17 @@
     import axios from "axios";
     export default {
         name: 'DialogRecipe',
-        props: ['recipe'],
+        props: ['recipe', 'callCallReset'],
         data () {
             return {
                 dialog: false,
+                dialogRemove: false,
                 loading: false,
+                loadingRemove: false,
                 listIngridients: []
             }
         },
+        
         methods: {
             async openDialog() {
                 this.loading = true
@@ -78,11 +106,31 @@
                         ingridient["name"] = responseIngridient.data[0].nombre
                     }
                     this.listIngridients = responseIngridientList.data
+                    console.log(this.listIngridients)
                 } catch (e) {
                     console.log("ERROR openDialog", e);
                 }
                 this.loading = false
                 this.dialog = true
+            },
+            async removeRecipe() {
+                this.loadingRemove = true
+                try {
+                    for(var ingridient of this.listIngridients){
+                        var responseIngridient = await axios.get(`http://localhost:3000/ingridientsList/ingridient/${ingridient.idingrediente}`);
+                        console.log("Borrar id the la lista",await axios.delete(`http://localhost:3000/ingridientsList/${ingridient.id}`))
+                        if(responseIngridient.data.length <= 1) {
+                            console.log("Borrar ingrediente",await axios.delete(`http://localhost:3000/ingridients/${ingridient.idingrediente}`))
+                        }
+                    }
+                    console.log("Borrar receta",await axios.delete(`http://localhost:3000/recipes/${this.listIngridients[0].idreceta}`))
+                    this.callCallReset();
+                } catch (e) {
+                    console.log("ERROR removeDialog", e);
+                }
+                this.loadingRemove = false
+                this.dialogRemove = false
+                this.dialog= false
             }
         }
     }

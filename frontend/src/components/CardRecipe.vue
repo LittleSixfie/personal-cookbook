@@ -9,7 +9,7 @@
             {{recipe.title_name}}
         </v-card-title>
         <v-card-actions>
-            <DialogRecipe :recipe="recipe"></DialogRecipe>
+            <DialogRecipe :recipe="recipe" :callCallReset="callReset"></DialogRecipe>
         </v-card-actions>
     </v-card>
 </template>
@@ -18,7 +18,7 @@
     import DialogRecipe from './DialogRecipe.vue';
     export default {
         name: 'CardRecipe',
-        props: ['recipe'],
+        props: ['recipe', 'callReset'],
         components:{
             DialogRecipe
         },
@@ -26,6 +26,7 @@
             return {
 
             }
-        }
+        },
+    
     }
 </script>

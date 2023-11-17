@@ -94,7 +94,7 @@ const ingridientListController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('DELETE FROM lista_ingredientes WHERE id=$1', [itemId])
-            res.json(queryResult.rows);
+            res.json(queryResult);
         } catch (err) {
             console.error(err);
         } finally {

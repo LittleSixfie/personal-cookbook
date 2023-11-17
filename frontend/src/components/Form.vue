@@ -69,14 +69,14 @@
                 this.loading = true
                 
                 try {
-                    const responseRecipe = await axios.post(`http://3.76.37.239:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
+                    const responseRecipe = await axios.post(`http://localhost:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
                     console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
                     //if (responseRecipe.status == 400) throw 'This recipe already exists'
                     await this.ingridientsList.forEach(async element => {
                         try{
-                            const responseIngredient = await axios.post(`http://3.76.37.239:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
+                            const responseIngredient = await axios.post(`http://localhost:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
                             console.log("INGREDIENTE SUELTO", responseIngredient.data)
-                            const responseListIngredients = await axios.post(`http://3.76.37.239:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity});
+                            const responseListIngredients = await axios.post(`http://localhost:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity});
                             console.log("INGREDIENTE LISTA", responseListIngredients.data)
                         } catch(e) {
                             alert(e)

@@ -35,7 +35,7 @@
             :key="recipe"
             cols="4"
           >
-          <CardRecipe :recipe="recipe" ></CardRecipe>
+          <CardRecipe :recipe="recipe" :callReset="reset" ></CardRecipe>
           </v-col>
         </v-row>
       </v-container>
