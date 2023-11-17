@@ -116,14 +116,15 @@
             async removeRecipe() {
                 this.loadingRemove = true
                 try {
+                    //We check if we have to erase some ingridientes.
                     for(var ingridient of this.listIngridients){
                         var responseIngridient = await axios.get(`http://localhost:3000/ingridientsList/ingridient/${ingridient.idingrediente}`);
-                        console.log("Borrar id the la lista",await axios.delete(`http://localhost:3000/ingridientsList/${ingridient.id}`))
+                        await axios.delete(`http://localhost:3000/ingridientsList/${ingridient.id}`)
                         if(responseIngridient.data.length <= 1) {
-                            console.log("Borrar ingrediente",await axios.delete(`http://localhost:3000/ingridients/${ingridient.idingrediente}`))
+                            await axios.delete(`http://localhost:3000/ingridients/${ingridient.idingrediente}`)
                         }
                     }
-                    console.log("Borrar receta",await axios.delete(`http://localhost:3000/recipes/${this.listIngridients[0].idreceta}`))
+                    await axios.delete(`http://localhost:3000/recipes/${this.listIngridients[0].idreceta}`)
                     this.callCallReset();
                 } catch (e) {
                     console.log("ERROR removeDialog", e);

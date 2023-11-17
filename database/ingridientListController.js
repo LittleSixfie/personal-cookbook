@@ -66,7 +66,6 @@ const ingridientListController = {
         let dbClient = await connectDB()
         try {
             const requestData = req.body; 
-            console.log(requestData)
             const queryResult = await dbClient.query('INSERT INTO lista_ingredientes( idreceta, idingrediente, cantidad )VALUES ($1,$2,$3) RETURNING id', [requestData['idRecipe'], requestData['idIngridient'], requestData['quantity']])
             res.status(201)
             res.json(queryResult);
