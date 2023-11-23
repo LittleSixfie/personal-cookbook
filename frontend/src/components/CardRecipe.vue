@@ -1,7 +1,7 @@
 <template>
     <v-card height="200">
         <v-img
-            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+            :src="this.cardImage"
             height="110px"
             cover
         ></v-img>
@@ -24,9 +24,14 @@
         },
         data(){
             return {
-
+                cardImage: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
             }
         },
-    
+        beforeMount() {
+            console.log(this.recipe.id, this.recipe)
+            
+                this.cardImage = `http://localhost:3000/image/${this.recipe.id}`
+            
+        }
     }
 </script>

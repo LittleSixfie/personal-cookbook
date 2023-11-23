@@ -19,7 +19,7 @@ const recipeController = {
     getAllRecipes: async (req, res) => {
         let dbClient = await connectDB()
         try {
-            const queryResult = await dbClient.query('SELECT * FROM recipe')
+            const queryResult = await dbClient.query('SELECT id, title_name, instructions, origin FROM recipe')
             res.json(queryResult.rows);
         } catch (err) {
             console.error(err);

@@ -11,6 +11,14 @@
                 :rules="rules"
                 label="Instruciones"
             ></v-textarea>
+            <v-file-input
+                :rules="rules"
+                accept="image/png, image/jpeg, image/bmp"
+                placeholder="Only image accepted"
+                prepend-icon="mdi-camera"
+                label="image"
+                v-model="image"
+            ></v-file-input>
             <v-text-field
                 v-model="origin"
                 :rules="rules"
@@ -42,7 +50,8 @@
 </template>
 
 <script>
-    import axios from "axios";
+    import { NodeTypes } from "@vue/compiler-core";
+import axios from "axios";
     export default {
         name: 'Form',
         data: () => ({
@@ -51,6 +60,7 @@
             instructions: '',
             origin: '',
             loading: false,
+            image:null,
             ingridientsList: [{ ingridientName: "", measurement: "", quantity: 0 }],
             valid : true,
             rules: [
@@ -69,6 +79,18 @@
                 try {
                     const responseRecipe = await axios.post(`http://localhost:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
                     console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
+
+                    const formData = new FormData();
+                    console.log(this.image[0])
+                    formData.append('image', this.image[0]);
+                    const responseImage = await axios.post(`http://localhost:3000/image/add/${responseRecipe.data.rows[0].id}`, formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        });
+                    console.log("IMAGEN",responseImage)
+
+
                     await this.ingridientsList.forEach(async element => {
                         try{
                             const responseIngredient = await axios.post(`http://localhost:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
