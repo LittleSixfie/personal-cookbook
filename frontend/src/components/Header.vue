@@ -64,30 +64,7 @@
                     <v-toolbar-title>Add Recipe with Image</v-toolbar-title>
                     <v-spacer></v-spacer>
                     </v-toolbar>
-                        <v-sheet width="80%" class="mx-auto">
-                            <v-form validate-on="input"  v-model="valid" @submit.prevent>
-                                <v-text-field
-                                    v-model="title_name"
-                                    :rules="rules"
-                                    label="Titulo Receta"
-                                ></v-text-field>
-                                
-                                <v-file-input
-                                    :rules="rules"
-                                    accept="image/png, image/jpeg, image/bmp"
-                                    placeholder="Only image accepted"
-                                    prepend-icon="mdi-camera"
-                                    label="image"
-                                    v-model="image"
-                                ></v-file-input>
-                                <v-text-field
-                                    v-model="origin"
-                                    :rules="rules"
-                                    label="Origen"
-                                ></v-text-field>
-                                <v-btn @click="addIngredient" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
-                            </v-form>
-                        </v-sheet>
+                    <FormCamera />
                 </v-card>
             </v-dialog>
     </v-app-bar>
@@ -95,6 +72,7 @@
 
 <script>
     import Form from './Form.vue'
+    import FormCamera from './FormCamera.vue'
     import { createWorker } from 'tesseract.js'
     
     export default {
@@ -102,11 +80,10 @@
         data: () => ({  
             dialog:false, 
             dialogCamera:false,
-            title_name: '',
-            origin: '',
-            loading: false,
-            image:null,
-            valid : true,
+            
+            
+            
+            
             rules: [
                 value => {
                     if (value) return true
@@ -115,26 +92,8 @@
             ],
         }),
         components: {
-            Form
-        },
-        methods: {
-            async addIngredient() {
-                
-                this.loading = true
-                try {
-                    for (var i = 0; i < 4; i++) {
-                        const worker = await createWorker('spa',i);
-                        const text = await worker.recognize(this.image[0]);
-                        console.log(`OEM${i}`,"",text.data.text);
-                        await worker.terminate()
-                    }
-                } catch (e) {
-                    alert(e.response.data)
-                }
-                this.loading = false
-                
-            }
-
+            Form,
+            FormCamera
         },
         
     }

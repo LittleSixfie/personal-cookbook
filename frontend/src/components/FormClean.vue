@@ -44,7 +44,7 @@
                     :rules="rules"
                 ></v-combobox>
             </div>
-            <v-btn @click="addIngredient" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
+            <v-btn @click="addRecipe" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
         </v-form>
     </v-sheet>
 </template>
@@ -52,16 +52,17 @@
 <script>
 import axios from "axios";
     export default {
-        name: 'Form',
+        name: 'FormClean',
+        props: ['title_nameFather', 'instructionsFather', 'imageFather', 'originFather', 'ingridientsListFather', 'idFather'],
         data: () => ({
-            id: 1,
-            title_name: '',
-            instructions: '',
-            origin: '',
-            loading: false,
-            image:null,
-            ingridientsList: [{ ingridientName: "", measurement: "", quantity: 0 }],
             valid : true,
+            loading: false,
+            title_name: "",
+            instructions: "",
+            image:null,
+            origin:"",
+            ingridientsList:[],
+            id:1,
             rules: [
                 value => {
                     if (value) return true
@@ -72,7 +73,7 @@ import axios from "axios";
                 v => /^\d+$/.test(v)||'This field only accept numbers']
         }),
         methods: {
-            async addIngredient() {
+            async addRecipe() {
                 this.loading = true
                 try {
                     const responseRecipe = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
@@ -103,7 +104,6 @@ import axios from "axios";
                 this.loading = false
             },
             addRow() {
-                console.log("added");
                 this.id += 1;
                 this.ingridientsList.push({
                     ingridientName: "",
@@ -111,10 +111,19 @@ import axios from "axios";
                 });
             },
             removeRow() {
-                console.log("removed");
                 this.id -= 1;
                 this.ingridientsList.pop();
             }
+        },
+        beforeMount() {
+            this.title_name= this.title_nameFather
+            this.instructions= this.instructionsFather
+            this.image= this.imageFather
+            this.origin=this.originFather
+            this.ingridientsList=this.ingridientsListFather
+            this.id=this.idFather
+            console.log("beforeMount", this.title_name, this.title_nameFather)
+            
         },
     }
 </script>

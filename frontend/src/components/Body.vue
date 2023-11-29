@@ -64,7 +64,7 @@
           //TODO: Multivalue aplicar
           const newRecipes = [];
           for (const chip of this.chipFilter) {
-            const response = await axios.get(`http://localhost:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`);
+            const response = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`);
             for (const idReceta of response.data) {
               newRecipes.push(this.recipes.find(element => element.id == idReceta.idreceta));
             }
@@ -76,7 +76,7 @@
       },
       async reset() {
         try {
-          const responseAllRecipes = await axios.get(`http://localhost:3000/recipes`);
+          const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`);
           this.recipes = responseAllRecipes.data;
           this.chipFilter = [];
         } catch (e) {
@@ -86,10 +86,11 @@
       }
     },
     async created() {
+      console.log(process.env)
       try {
-        const responseAllRecipes = await axios.get(`http://localhost:3000/recipes`);
+        const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`);
         this.recipes = responseAllRecipes.data;
-        const responseAllIngridients = await axios.get(`http://localhost:3000/ingridients`);
+        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients`);
         this.ingridients = responseAllIngridients.data;
       } catch (e) {
         alert(e.response);

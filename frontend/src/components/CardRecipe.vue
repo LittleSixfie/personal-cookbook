@@ -30,7 +30,7 @@
         beforeMount() {
             console.log(this.recipe.id, this.recipe)
             
-                this.cardImage = `http://localhost:3000/image/${this.recipe.id}`
+                this.cardImage = `http://${process.env.VUE_APP_HOST}:3000/image/${this.recipe.id}`
             
         }
     }
