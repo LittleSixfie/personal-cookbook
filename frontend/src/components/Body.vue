@@ -86,7 +86,6 @@
       }
     },
     async created() {
-      console.log(process.env)
       try {
         const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`);
         this.recipes = responseAllRecipes.data;
