@@ -55,7 +55,7 @@
         </v-form>
     </v-sheet>
     <v-bottom-sheet v-model="sheet">
-        <FormClean :title_nameFather="title_name" :instructionsFather="origin" :imageFather="image" :originFather="origin" :ingridientsListFather="instructionsList" :idFather="id" />
+        <FormClean :title_nameFather="title_name" :instructionsFather="instructions" :imageFather="image" :originFather="origin" :ingridientsListFather="ingridientsList" :idFather="id" />
     </v-bottom-sheet>
 </template>
 <script>
@@ -67,7 +67,8 @@ import { createWorker } from 'tesseract.js';
             id: 1,
             title_name: '',
             origin: '',
-            instructionsList:[],
+            ingridientsList:[],
+            instructions:"",
             loading: false,
             image:null,
             imageDataURL: null,
@@ -98,7 +99,6 @@ import { createWorker } from 'tesseract.js';
                         const worker = await createWorker('spa',1);
                         const textInstructions = await worker.recognize(this.imageDataURLInstructions);
                         const textIngridients = await worker.recognize(this.imageIngridientsURL);
-                        //console.log(textInstructions.data)
                         textIngridients.data.lines.forEach(element => {
                             var ingredientListTest = new Object();
                             var textMeasurement = element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/) ? element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/)[0] : ""
@@ -106,10 +106,11 @@ import { createWorker } from 'tesseract.js';
                             ingredientListTest.quantity = textMeasurement.match(/\d+/) ? textMeasurement.match(/\d+/)[0] : 0
                             ingredientListTest.ingridientName= element.text.replace(ingredientListTest.quantity, '').replace(textMeasurement.match(/[A-Za-z]+/),"").trim()
                             ingredientListTest.measurement= "unidades"
-                            this.instructionsList.push(ingredientListTest)
+                            this.ingridientsList.push(ingredientListTest)
                         })
-                        this.id = textInstructions.data.lines.length
-                        console.log(this.instructionsList)
+                        this.id = textIngridients.data.lines.length
+                        this.instructions = textInstructions.data.text.replace(/\n/g, '')
+                        console.log(this.ingridientsList)
                         await worker.terminate()
                 
                 this.loading = false
@@ -136,10 +137,26 @@ import { createWorker } from 'tesseract.js';
                                 this.imageIngridientsURL = event.target.result;
                             break;
                             default:
-                            this.imageDataURL = event.target.result;
+                                this.imageDataURL = event.target.result;
+
+                                const base64Data = this.imageDataURL.split(',')[1];
+                                const binaryData = atob(base64Data);
+                                // Create a Uint8Array from the binary data
+                                const arrayBuffer = new ArrayBuffer(binaryData.length);
+                                const uint8Array = new Uint8Array(arrayBuffer);
+                                for (let i = 0; i < binaryData.length; i++) {
+                                    uint8Array[i] = binaryData.charCodeAt(i);
+                                }
+                                // Create a Blob from the Uint8Array
+                                const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+                                // Create a File from the Blob
+                                this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
+                                
+                                console.log(event, this.image, blob)
                         }
                     };
                     reader.readAsDataURL(imageFile);
+                    
                 }
         },
     }

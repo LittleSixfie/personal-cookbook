@@ -47,6 +47,21 @@
             <v-btn @click="addRecipe" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
         </v-form>
     </v-sheet>
+    <v-snackbar
+        v-model="snackbar"
+        :timeout="3000"
+    >
+        The recipe has been upload, close all please.
+        <template v-slot:actions>
+            <v-btn
+                color="blue"
+                variant="text"
+                @click="snackbar = false"
+            >
+                Close
+            </v-btn>
+        </template>
+    </v-snackbar>
 </template>
 
 <script>
@@ -61,8 +76,10 @@ import axios from "axios";
             instructions: "",
             image:null,
             origin:"",
+            
             ingridientsList:[],
             id:1,
+            snackbar : false,
             rules: [
                 value => {
                     if (value) return true
@@ -100,7 +117,7 @@ import axios from "axios";
                 } catch (e) {
                     alert(e.response.data)
                 }
-                
+                this.snackbar = true
                 this.loading = false
             },
             addRow() {
@@ -122,7 +139,7 @@ import axios from "axios";
             this.origin=this.originFather
             this.ingridientsList=this.ingridientsListFather
             this.id=this.idFather
-            console.log("beforeMount", this.title_name, this.title_nameFather)
+            console.log("beforeMount", this.title_name, this.image, this.origin,this.ingridientsList )
             
         },
     }
