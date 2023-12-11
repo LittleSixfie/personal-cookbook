@@ -1,9 +1,100 @@
 <template>
-    <h1>Header</h1>
+    <v-app-bar class="pa-3 bg-primary">
+        <v-app-bar-title>Application</v-app-bar-title>
+            <v-dialog
+                v-model="dialog"
+                fullscreen
+                :scrim="false"
+                transition="dialog-bottom-transition"
+            >
+                <template v-slot:activator="{ props }">
+                    <v-btn
+                    variant="elevated"
+                    icon
+                    dark
+                    v-bind="props"
+                    >
+                    <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-toolbar
+                    dark
+                    color="primary"
+                    >
+                    <v-btn
+                        icon
+                        dark
+                        @click="dialog = false"
+                    >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Add Recipe</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <Form />
+                </v-card>
+            </v-dialog>
+
+            <v-dialog
+                v-model="dialogCamera"
+                fullscreen
+                :scrim="false"
+                transition="dialog-bottom-transition"
+            >
+                <template v-slot:activator="{ props }">
+                    <v-btn
+                        variant="elevated"
+                        icon
+                        dark
+                        v-bind="props"
+                    >
+                        <v-icon>mdi-camera</v-icon>
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-toolbar dark color="primary" >
+                        <v-btn
+                            icon
+                            dark
+                            @click="dialogCamera = false"
+                        >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Add Recipe with Image</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <FormCamera />
+                </v-card>
+            </v-dialog>
+    </v-app-bar>
 </template>
 
 <script>
+    import Form from './Form.vue'
+    import FormCamera from './FormCamera.vue'
+    import { createWorker } from 'tesseract.js'
+    
     export default {
-        name: 'Header'
+        name: 'Header',
+        data: () => ({  
+            dialog:false, 
+            dialogCamera:false,
+            
+            
+            
+            
+            rules: [
+                value => {
+                    if (value) return true
+                        return 'You must enter text.'
+                }
+            ],
+        }),
+        components: {
+            Form,
+            FormCamera
+        },
+        
     }
 </script>
