@@ -3,12 +3,14 @@
         <br>
         <v-form validate-on="input"  v-model="valid" @submit.prevent>
             <v-text-field
+                clearable 
                 v-model="title_name"
                 :rules="rules"
                 label="Titulo Receta"
                 variant="solo-filled"
             ></v-text-field>
             <v-textarea
+                clearable 
                 v-model="instructions"
                 :rules="rules"
                 label="Instruciones"
@@ -26,8 +28,9 @@
                         variant="solo-filled"
                     ></v-file-input>
                 </v-col>
-                <v-col>
-                    <div ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</div>
+                <v-col >
+                    
+                    <v-container color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</v-container>
                 </v-col>
             </v-row>
             <v-text-field
@@ -35,6 +38,7 @@
                 :rules="rules"
                 label="Origen"
                 variant="solo-filled"
+                clearable
             ></v-text-field>
             <v-btn @click="addRow">Add row</v-btn>
             <br>
@@ -44,20 +48,29 @@
                 :rules="rules"
                 label="Ingredient"
                 variant="solo-filled"
+                clearable
                 ></v-text-field>
-                <v-text-field
-                v-model="item.quantity"
-                :rules="justNumbers"
-                label="Quantity"
-                variant="solo-filled"
-                ></v-text-field>
-                <v-combobox
-                v-model="item.measurement"
-                label="Measurement"
-                :items="['unidades', 'gramos', 'mililitros']"
-                :rules="rules"
-                variant="solo-filled"
-                ></v-combobox>
+                
+                <v-row no-gutters>
+                    <v-col class="pr-1">
+                        <v-text-field
+                        clearable
+                        v-model="item.quantity"
+                        :rules="justNumbers"
+                        label="Quantity"
+                        variant="solo-filled"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col class="pl-1">
+                        <v-combobox
+                        v-model="item.measurement"
+                        label="Measurement"
+                        :items="['unidades', 'gramos', 'mililitros']"
+                        :rules="rules"
+                        variant="solo-filled"
+                        ></v-combobox>
+                    </v-col>
+                </v-row>
                 <v-btn v-if="id > 1" @click="removeRow(item.ingridientName)">Remove row</v-btn>
             </v-sheet>
             <v-btn @click="addIngredient" :loading="loading" type="submit" block class="mt-2" :disabled="!valid" >Submit</v-btn>
@@ -76,6 +89,7 @@ import axios from "axios";
             origin: '',
             loading: false,
             image:null,
+            imageDataURL:"",
             ingridientsList: [{ ingridientName: "", measurement: "", quantity: 0 }],
             valid : true,
             rules: [
@@ -93,7 +107,6 @@ import axios from "axios";
                 try {
                     const responseRecipe = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
                     console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
-
                     const formData = new FormData();
                     formData.append('image', this.image[0]);
                     const responseImage = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/image/add/${responseRecipe.data.rows[0].id}`, formData, {
@@ -134,6 +147,39 @@ import axios from "axios";
                 console.log(this.ingridientsList)
                 this.id -= 1;
             
+            },
+            onPaste(event) {
+                const clipboardData = event.clipboardData || window.clipboardData;
+                const items = clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        const imageFile = items[i].getAsFile();
+                        this.processImage(imageFile, event.srcElement.id);
+                    }
+                }
+            },
+            processImage(imageFile, id) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    this.imageDataURL = event.target.result;
+
+                    const base64Data = this.imageDataURL.split(',')[1];
+                    const binaryData = atob(base64Data);
+                    // Create a Uint8Array from the binary data
+                    const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    for (let i = 0; i < binaryData.length; i++) {
+                        uint8Array[i] = binaryData.charCodeAt(i);
+                    }
+                    // Create a Blob from the Uint8Array
+                    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+                    // Create a File from the Blob
+                    this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
+                    
+                    console.log(event, this.image, blob)
+                };
+                reader.readAsDataURL(imageFile);
+                
             }
         },
     }
