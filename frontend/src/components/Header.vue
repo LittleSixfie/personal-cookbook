@@ -1,6 +1,7 @@
 <template>
     <v-app-bar class="pa-3 bg-primary">
         <v-app-bar-title>Application</v-app-bar-title>
+        <v-btn @click="toggleTheme">toggle theme</v-btn>
             <v-dialog
                 v-model="dialog"
                 fullscreen
@@ -70,20 +71,25 @@
     </v-app-bar>
 </template>
 
+<script setup>
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+
+function toggleTheme () {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
+</script>
+
 <script>
     import Form from './Form.vue'
     import FormCamera from './FormCamera.vue'
-    import { createWorker } from 'tesseract.js'
     
     export default {
         name: 'Header',
         data: () => ({  
             dialog:false, 
             dialogCamera:false,
-            
-            
-            
-            
             rules: [
                 value => {
                     if (value) return true
