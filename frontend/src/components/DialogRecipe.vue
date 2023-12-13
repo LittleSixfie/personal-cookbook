@@ -13,36 +13,72 @@
             v-model="dialog"
             width="auto"
             transition="dialog-top-transition"
-        >
-            <v-card>
+            >
+            <v-card  >
                 <v-toolbar
+                :title="recipe.title_name"
                     color="primary"
-                    :title="recipe.title_name"
                 ></v-toolbar>
-                <v-card-text>
-                    {{recipe.instructions}}
-                </v-card-text>
-                <v-list lines="three" density="compact">
-                    <v-list-item v-for="ingridient in listIngridients" :key="ingridient">
-                        <v-row no-gutters>
-                            <v-col cols="4" >
-                                <v-card-text>
-                                    {{ingridient.name}}
-                                </v-card-text>
-                            </v-col>
-                            <v-col cols="4" >
-                                <v-card-text>
-                                    {{ingridient.cantidad}}
-                                </v-card-text>
-                            </v-col>
-                            <v-col cols="4" >
-                                <v-card-text>
-                                    {{ingridient.measurement}}
-                                </v-card-text>
-                            </v-col>
-                        </v-row>
-                    </v-list-item>
-                </v-list>
+                
+                <v-row no-gutters color="primary-darken-1">
+                    <v-col cols="7" >
+                        <v-card-text>
+                            {{recipe.instructions}}
+                        </v-card-text>
+                    </v-col>
+                    <v-col cols="5" >
+                        <v-card-item >
+                            <v-img
+                            :src="image"
+                            height="200"
+                            cover
+                            class="rounded"
+                            ></v-img>
+                        </v-card-item>
+                    </v-col>
+                </v-row>
+
+                <v-card-item>
+                    <v-list lines="three" density="compact" bg-color="primary" rounded="lg">
+                        <p class="text-h6 ml-4">Ingridient List:</p>
+                        <v-row no-gutters >
+                                <v-col cols="4" color="primary-darken-1">
+                                    <v-card-text >Ingridient</v-card-text>
+                                </v-col>
+                                <v-col cols="4" >
+                                    <v-card-text >Quantity</v-card-text>
+                                </v-col>
+                                <v-col cols="4" >
+                                    <v-card-text>Measurement</v-card-text>
+                                </v-col>
+                            </v-row>
+                        
+                        <v-list-item v-for="ingridient in listIngridients" :key="ingridient" :active=true>
+                            <v-sheet>
+
+                            </v-sheet>
+                            <v-row no-gutters color="primary-darken-1">
+                                <v-col cols="4" >
+                                    <v-card-text>
+                                        {{ingridient.name}}
+                                    </v-card-text>
+                                </v-col>
+                                <v-col cols="4" >
+                                    <v-card-text>
+                                        {{ingridient.cantidad}}
+                                    </v-card-text>
+                                </v-col>
+                                <v-col cols="4" >
+                                    <v-card-text>
+                                        {{ingridient.measurement}}
+                                    </v-card-text>
+                                </v-col>
+                            </v-row>
+                        </v-list-item>
+                    </v-list>
+
+                </v-card-item>
+    
                 <v-card-actions>
                     <v-btn 
                         color="primary"  @click="dialog = false"
@@ -84,7 +120,7 @@
     import axios from "axios";
     export default {
         name: 'DialogRecipe',
-        props: ['recipe', 'callCallReset'],
+        props: ['recipe', 'callCallReset','image'],
         data () {
             return {
                 dialog: false,

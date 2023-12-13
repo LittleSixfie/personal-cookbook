@@ -1,12 +1,15 @@
 <template>
     <v-app-bar class="pa-3 bg-primary">
-        <v-app-bar-title>Application</v-app-bar-title>
-        <v-btn @click="toggleTheme">toggle theme</v-btn>
-            <v-dialog
+        
+        <v-app-bar-title></v-app-bar-title>
+        
+        <template v-slot:append >
+        <v-dialog
                 v-model="dialog"
                 fullscreen
                 :scrim="false"
                 transition="dialog-bottom-transition"
+                
             >
                 <template v-slot:activator="{ props }">
                     <v-btn
@@ -14,6 +17,7 @@
                     icon
                     dark
                     v-bind="props"
+                    class="mr-2"
                     >
                     <v-icon>mdi-plus</v-icon>
                     </v-btn>
@@ -49,6 +53,7 @@
                         icon
                         dark
                         v-bind="props"
+                        class="mr-2"
                     >
                         <v-icon>mdi-camera</v-icon>
                     </v-btn>
@@ -68,6 +73,9 @@
                     <FormCamera />
                 </v-card>
             </v-dialog>
+            <v-switch @change="toggleTheme" label="Theme" inset class="mt-5"></v-switch>
+            </template>
+            <v-app-bar-title>RecipeBook</v-app-bar-title>
     </v-app-bar>
 </template>
 
@@ -87,6 +95,7 @@ function toggleTheme () {
     
     export default {
         name: 'Header',
+        isDark:false,
         data: () => ({  
             dialog:false, 
             dialogCamera:false,

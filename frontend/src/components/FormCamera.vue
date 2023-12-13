@@ -6,8 +6,9 @@
                 v-model="title_name"
                 :rules="rules"
                 label="Titulo Receta"
+                variant="solo-filled"
             ></v-text-field>   
-            <v-divider></v-divider>
+            <v-divider thickness="2"></v-divider>
             <br>
 
             <v-row no-gutters>
@@ -24,11 +25,11 @@
                 </v-col>
                 <v-col >
                     
-                    <v-container id="ingridient" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</v-container>
+                    <v-container id="ingridient" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the ingridient image.</v-container>
                 </v-col>
             </v-row>
-            <br>
-            <v-divider></v-divider>
+            
+            <v-divider thickness="2"></v-divider>
             <br>
             <v-row no-gutters>
                 <v-col>
@@ -44,11 +45,11 @@
                 </v-col>
                 <v-col >
                     
-                    <v-container id="instructions" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</v-container>
+                    <v-container id="instructions" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the instructions image.</v-container>
                 </v-col>
             </v-row>
-            <br>
-            <v-divider></v-divider>
+            
+            <v-divider thickness="2"></v-divider>
             <br>
             <v-row no-gutters>
                 <v-col>
@@ -63,15 +64,16 @@
                     ></v-file-input>
                 </v-col>
                 <v-col >
-                    <v-container color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</v-container>
+                    <v-container color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the recipe image.</v-container>
                 </v-col>
             </v-row>
-            <v-divider></v-divider>
+            <v-divider thickness="2"></v-divider>
             <br>
             <v-text-field
                 v-model="origin"
                 :rules="rules"
                 label="Origen"
+                variant="solo-filled"
             ></v-text-field> 
             <v-btn @click="leerImagenes" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
         </v-form>

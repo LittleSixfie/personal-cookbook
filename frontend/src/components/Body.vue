@@ -27,18 +27,18 @@
           </v-sheet>
         </v-col>
       </v-row>
-      
-      <v-container>
-        <v-row>
+        <v-row class="ma-10">
           <v-col
             v-for="recipe in recipes"
             :key="recipe"
-            cols="4"
+            cols="6"
+            sm="4"
+            md="3"
+            lg="2"
           >
           <CardRecipe :recipe="recipe" :callReset="reset" ></CardRecipe>
           </v-col>
         </v-row>
-      </v-container>
     </v-main>
 </template>
 
