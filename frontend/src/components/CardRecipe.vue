@@ -1,15 +1,15 @@
 <template>
-    <v-card height="200">
+    <v-card class="h-auto">
         <v-img
             :src="this.cardImage"
-            height="110px"
+            height="160px"
             cover
         ></v-img>
         <v-card-title> 
             {{recipe.title_name}}
         </v-card-title>
         <v-card-actions>
-            <DialogRecipe :recipe="recipe" :callCallReset="callReset"></DialogRecipe>
+            <DialogRecipe :recipe="recipe" :callCallReset="callReset" :image="cardImage"></DialogRecipe>
         </v-card-actions>
     </v-card>
 </template>
@@ -21,11 +21,6 @@
         props: ['recipe', 'callReset'],
         components:{
             DialogRecipe
-        },
-        data(){
-            return {
-                cardImage: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-            }
         },
         beforeMount() {            
             this.cardImage = `http://${process.env.VUE_APP_HOST}:3000/image/${this.recipe.id}`

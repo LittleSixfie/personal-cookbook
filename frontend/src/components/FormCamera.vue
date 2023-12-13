@@ -1,55 +1,74 @@
 <template>
-    <v-sheet width="80%" class="mx-auto">
+    <v-sheet width="90%" class="mx-auto">
+        <br>
         <v-form validate-on="input"  v-model="valid" @submit.prevent>
             <v-text-field
                 v-model="title_name"
                 :rules="rules"
                 label="Titulo Receta"
+                variant="solo-filled"
             ></v-text-field>   
-            <v-divider></v-divider>
+            <v-divider thickness="2"></v-divider>
             <br>
-            <v-file-input
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Instructions image"
-                prepend-icon="mdi-camera"
-                label="Instructions image"
-                v-model="imageInstructions"
-            ></v-file-input>
-
-            <div id="instructions" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the instructions image.</div>
+            <v-row no-gutters>
+                <v-col>
+                    <v-file-input
+                        :rules="rules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Only ingridients image accepted"
+                        prepend-icon="mdi-camera"
+                        label="Ingridients Image"
+                        v-model="imageIngridients"
+                        variant="solo-filled"
+                    ></v-file-input>
+                </v-col>
+                <v-col >
+                    <v-container id="ingridient" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the ingridient image.</v-container>
+                </v-col>
+            </v-row>
+            <v-divider thickness="2"></v-divider>
             <br>
-            <v-alert v-if="imageDataURLInstructions" text="..." type="success"></v-alert>
-            <v-divider></v-divider>
+            <v-row no-gutters>
+                <v-col>
+                    <v-file-input
+                        :rules="rules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Only instrucctions image accepted"
+                        prepend-icon="mdi-camera"
+                        label="Instructions Image"
+                        v-model="imageInstructions"
+                        variant="solo-filled"
+                    ></v-file-input>
+                </v-col>
+                <v-col >
+                    <v-container id="instructions" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the instructions image.</v-container>
+                </v-col>
+            </v-row>
+            <v-divider thickness="2"></v-divider>
             <br>
-            <v-file-input
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Only ingridients image accepted"
-                prepend-icon="mdi-camera"
-                label="image"
-                v-model="imageIngridients"
-            ></v-file-input>
-
-            <div id="ingrediente" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the ingridients image.</div>
-            <br>
-            <v-alert v-if="imageIngridientsURL" text="..." type="success"></v-alert>
-            <v-divider></v-divider>
-            <br>
-            <v-file-input
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Only image accepted"
-                prepend-icon="mdi-camera"
-                label="image"
-                v-model="image"
-            ></v-file-input>
-            <div ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</div>
-            <br>
-            <v-alert v-if="imageDataURL" text="..." type="success"></v-alert>
-            <v-divider></v-divider>
+            <v-row no-gutters>
+                <v-col>
+                    <v-file-input
+                        :rules="rules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Only image accepted"
+                        prepend-icon="mdi-camera"
+                        label="Image of Recipe"
+                        v-model="image"
+                        variant="solo-filled"
+                    ></v-file-input>
+                </v-col>
+                <v-col >
+                    <v-container color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the recipe image.</v-container>
+                </v-col>
+            </v-row>
+            <v-divider thickness="2"></v-divider>
             <br>
             <v-text-field
                 v-model="origin"
                 :rules="rules"
                 label="Origen"
+                variant="solo-filled"
             ></v-text-field> 
             <v-btn @click="leerImagenes" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
         </v-form>
@@ -117,47 +136,51 @@ import { createWorker } from 'tesseract.js';
                 this.sheet = true
             },
             onPaste(event) {
-                    const clipboardData = event.clipboardData || window.clipboardData;
-                    const items = clipboardData.items;
-                    for (let i = 0; i < items.length; i++) {
-                        if (items[i].type.indexOf("image") !== -1) {
-                            const imageFile = items[i].getAsFile();
-                            this.processImage(imageFile, event.srcElement.id);
-                        }
+                const clipboardData = event.clipboardData || window.clipboardData;
+                const items = clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        const imageFile = items[i].getAsFile();
+                        this.processImage(imageFile, event.srcElement.id);
                     }
-                },
-                processImage(imageFile, id) {
-                    const reader = new FileReader();
-                    reader.onload = event => {
-                        switch (id) {
-                            case "instructions":
-                                this.imageDataURLInstructions = event.target.result;
-                            break;
-                            case "ingrediente":
-                                this.imageIngridientsURL = event.target.result;
-                            break;
-                            default:
-                                this.imageDataURL = event.target.result;
-
-                                const base64Data = this.imageDataURL.split(',')[1];
-                                const binaryData = atob(base64Data);
-                                // Create a Uint8Array from the binary data
-                                const arrayBuffer = new ArrayBuffer(binaryData.length);
-                                const uint8Array = new Uint8Array(arrayBuffer);
-                                for (let i = 0; i < binaryData.length; i++) {
-                                    uint8Array[i] = binaryData.charCodeAt(i);
-                                }
-                                // Create a Blob from the Uint8Array
-                                const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-                                // Create a File from the Blob
-                                this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
-                                
-                                console.log(event, this.image, blob)
-                        }
-                    };
-                    reader.readAsDataURL(imageFile);
-                    
                 }
+            },
+            processImage(imageFile, id) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    switch (id) {
+                        case "instructions":
+                            console.log("instructions")
+                            this.imageDataURLInstructions = event.target.result;
+                            this.imageInstructions = [this.convertToFile(this.imageDataURLInstructions,"imageInstrucctions.jpg")];
+                            break;
+                        case "ingridient":
+                            console.log("ingirident")
+                            this.imageIngridientsURL = event.target.result;
+                            this.imageIngridients = [this.convertToFile(this.imageIngridientsURL,"imageIngridients.jpg")];
+                            break;
+                        default:
+                            console.log("default",id)
+                            this.imageDataURL = event.target.result;
+                            this.image = [this.convertToFile(this.imageDataURL,"imageRecipe.jpg")];
+                            
+                    }
+                };
+                reader.readAsDataURL(imageFile);    
+            },
+            convertToFile(imageData, name) {
+                const base64Data = imageData.split(',')[1];
+                const binaryData = atob(base64Data);
+                // Create a Uint8Array from the binary data
+                const arrayBuffer = new ArrayBuffer(binaryData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < binaryData.length; i++) {
+                    uint8Array[i] = binaryData.charCodeAt(i);
+                }
+                // Create a Blob from the Uint8Array
+                const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+                return new File([blob], name, { type: 'image/jpeg' })
+            }
         },
     }
 </script>

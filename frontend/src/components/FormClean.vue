@@ -1,67 +1,86 @@
 <template>
-    <v-sheet width="80%" class="mx-auto">
+    <v-sheet width="100%" class="mx-auto pb-3 px-3" >
+        <br>
         <v-form validate-on="input"  v-model="valid" @submit.prevent>
             <v-text-field
+                clearable 
                 v-model="title_name"
                 :rules="rules"
                 label="Titulo Receta"
+                variant="solo-filled"
             ></v-text-field>
             <v-textarea
+                clearable 
                 v-model="instructions"
                 :rules="rules"
                 label="Instruciones"
+                variant="solo-filled"
             ></v-textarea>
-            <v-file-input
-                :rules="rules"
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Only image accepted"
-                prepend-icon="mdi-camera"
-                label="image"
-                v-model="image"
-            ></v-file-input>
+            <v-row no-gutters>
+                <v-col>
+                    <v-file-input
+                        :rules="rules"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Only image accepted"
+                        prepend-icon="mdi-camera"
+                        label="image"
+                        v-model="image"
+                        variant="solo-filled"
+                    ></v-file-input>
+                </v-col>
+                <v-col >
+                    
+                    <v-container color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and use Control-V to paste the image.</v-container>
+                </v-col>
+            </v-row>
             <v-text-field
                 v-model="origin"
                 :rules="rules"
                 label="Origen"
+                variant="solo-filled"
+                clearable
             ></v-text-field>
-            <v-btn @click="addRow">Add row</v-btn>
-            <v-btn v-if="id != 1" @click="removeRow">Remove row</v-btn>
-            <div v-for="item in ingridientsList" :key="item.id">
-                <v-text-field
-                    v-model="item.ingridientName"
-                    :rules="rules"
-                    label="Ingredient"
-                ></v-text-field>
-                <v-text-field
-                    v-model="item.quantity"
-                    :rules="justNumbers"
-                    label="Quantity"
-                ></v-text-field>
-                <v-combobox
-                    v-model="item.measurement"
-                    label="Measurement"
-                    :items="['unidades', 'gramos', 'mililitros']"
-                    :rules="rules"
-                ></v-combobox>
-            </div>
-            <v-btn @click="addRecipe" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
+            <v-card class="pa-3" color="primary">
+                <v-row>
+                    <v-card-title>Ingridient List</v-card-title>
+                    <v-btn class="mt-1" @click="addRow">Add row</v-btn>
+                </v-row>
+                
+                <v-sheet v-for="item in ingridientsList" :key="item.id" color="primary-darken-1" class="pa-2 mt-2 rounded-lg">
+                    <v-text-field
+                        v-model="item.ingridientName"
+                        :rules="rules"
+                        label="Ingredient"
+                        variant="solo-filled"
+                        clearable
+                    ></v-text-field>
+                    
+                    <v-row no-gutters>
+                        <v-col class="pr-1">
+                            <v-text-field
+                                clearable
+                                v-model="item.quantity"
+                                :rules="justNumbers"
+                                label="Quantity"
+                                variant="solo-filled"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col class="pl-1">
+                            <v-combobox
+                                v-model="item.measurement"
+                                label="Measurement"
+                                :items="['unidades', 'gramos', 'mililitros']"
+                                :rules="rules"
+                                variant="solo-filled"
+                            ></v-combobox>
+                        </v-col>
+                    </v-row>
+                    <v-btn v-if="id > 1" @click="removeRow(item.ingridientName)">Remove row</v-btn>
+                </v-sheet>
+            </v-card>
+            <v-btn @click="addRecipe" :loading="loading" type="submit" block class="mt-2" :disabled="!valid" >Submit</v-btn>
         </v-form>
     </v-sheet>
-    <v-snackbar
-        v-model="snackbar"
-        :timeout="3000"
-    >
-        The recipe has been upload, close all please.
-        <template v-slot:actions>
-            <v-btn
-                color="blue"
-                variant="text"
-                @click="snackbar = false"
-            >
-                Close
-            </v-btn>
-        </template>
-    </v-snackbar>
 </template>
 
 <script>
@@ -76,7 +95,6 @@ import axios from "axios";
             instructions: "",
             image:null,
             origin:"",
-            
             ingridientsList:[],
             id:1,
             snackbar : false,
@@ -121,15 +139,54 @@ import axios from "axios";
                 this.loading = false
             },
             addRow() {
+                console.log("added");
                 this.id += 1;
                 this.ingridientsList.push({
                     ingridientName: "",
-                    measurement: ""
+                    measurement: "",
+                    quantity: 0
                 });
+                console.log(this.ingridientsList)
             },
-            removeRow() {
+            removeRow(itemName) {
+                console.log("removed", itemName);
+                this.ingridientsList = this.ingridientsList.filter(item => item.ingridientName !== itemName);
+                console.log(this.ingridientsList)
                 this.id -= 1;
-                this.ingridientsList.pop();
+            
+            },
+            onPaste(event) {
+                const clipboardData = event.clipboardData || window.clipboardData;
+                const items = clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        const imageFile = items[i].getAsFile();
+                        this.processImage(imageFile, event.srcElement.id);
+                    }
+                }
+            },
+            processImage(imageFile, id) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    this.imageDataURL = event.target.result;
+
+                    const base64Data = this.imageDataURL.split(',')[1];
+                    const binaryData = atob(base64Data);
+                    // Create a Uint8Array from the binary data
+                    const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    for (let i = 0; i < binaryData.length; i++) {
+                        uint8Array[i] = binaryData.charCodeAt(i);
+                    }
+                    // Create a Blob from the Uint8Array
+                    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+                    // Create a File from the Blob
+                    this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
+                    
+                    console.log(event, this.image, blob)
+                };
+                reader.readAsDataURL(imageFile);
+                
             }
         },
         beforeMount() {
