@@ -22,11 +22,6 @@
         components:{
             DialogRecipe
         },
-        data(){
-            return {
-                cardImage: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-            }
-        },
         beforeMount() {            
             this.cardImage = `http://${process.env.VUE_APP_HOST}:3000/image/${this.recipe.id}`
         }

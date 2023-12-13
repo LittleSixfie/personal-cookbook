@@ -2,46 +2,45 @@
 <template>
     <div class="text-center">
         <v-btn
-        color="primary"
-        :disabled="dialog"
-        :loading="loading"
-        @click="openDialog" 
+            color="primary"
+            :disabled="dialog"
+            :loading="loading"
+            @click="openDialog" 
         >
-        Open Dialog
-
-        <v-dialog
-            v-model="dialog"
-            width="auto"
-            transition="dialog-top-transition"
+            Open Dialog
+            <v-dialog
+                v-model="dialog"
+                width="auto"
+                transition="dialog-top-transition"
             >
-            <v-card  >
-                <v-toolbar
-                :title="recipe.title_name"
-                    color="primary"
-                ></v-toolbar>
-                
-                <v-row no-gutters color="primary-darken-1">
-                    <v-col cols="7" >
-                        <v-card-text>
-                            {{recipe.instructions}}
-                        </v-card-text>
-                    </v-col>
-                    <v-col cols="5" >
-                        <v-card-item >
-                            <v-img
-                            :src="image"
-                            height="200"
-                            cover
-                            class="rounded"
-                            ></v-img>
-                        </v-card-item>
-                    </v-col>
-                </v-row>
+                <v-card>
+                    <v-toolbar
+                    :title="recipe.title_name"
+                        color="primary"
+                    ></v-toolbar>
+                    
+                    <v-row no-gutters color="primary-darken-1">
+                        <v-col cols="7" >
+                            <v-card-text>
+                                {{recipe.instructions}}
+                            </v-card-text>
+                        </v-col>
+                        <v-col cols="5" >
+                            <v-card-item >
+                                <v-img
+                                    :src="image"
+                                    height="200"
+                                    cover
+                                    class="rounded"
+                                ></v-img>
+                            </v-card-item>
+                        </v-col>
+                    </v-row>
 
-                <v-card-item>
-                    <v-list lines="three" density="compact" bg-color="primary" rounded="lg">
-                        <p class="text-h6 ml-4">Ingridient List:</p>
-                        <v-row no-gutters >
+                    <v-card-item>
+                        <v-list lines="three" density="compact" bg-color="primary" rounded="lg">
+                            <p class="text-h6 ml-4">Ingridient List:</p>
+                            <v-row no-gutters >
                                 <v-col cols="4" color="primary-darken-1">
                                     <v-card-text >Ingridient</v-card-text>
                                 </v-col>
@@ -52,66 +51,60 @@
                                     <v-card-text>Measurement</v-card-text>
                                 </v-col>
                             </v-row>
-                        
-                        <v-list-item v-for="ingridient in listIngridients" :key="ingridient" :active=true>
-                            <v-sheet>
-
-                            </v-sheet>
-                            <v-row no-gutters color="primary-darken-1">
-                                <v-col cols="4" >
-                                    <v-card-text>
-                                        {{ingridient.name}}
-                                    </v-card-text>
-                                </v-col>
-                                <v-col cols="4" >
-                                    <v-card-text>
-                                        {{ingridient.cantidad}}
-                                    </v-card-text>
-                                </v-col>
-                                <v-col cols="4" >
-                                    <v-card-text>
-                                        {{ingridient.measurement}}
-                                    </v-card-text>
-                                </v-col>
-                            </v-row>
-                        </v-list-item>
-                    </v-list>
-
-                </v-card-item>
-    
-                <v-card-actions>
-                    <v-btn 
-                        color="primary"  @click="dialog = false"
-                    >
-                        Close Dialog
-                    </v-btn>
-                    <v-btn 
-                        color="primary"  @click="dialogRemove = true"
-                    >
-                        Remove recipe
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-dialog
-            v-model="dialogRemove"
-            width="auto"
-            persistent
-        >
-            <v-card :loading="loadingRemove">
-            <v-card-title>
-                Are you sure?
-            </v-card-title>
-            <v-card-subtitle>
-                This recipe will be lost forever
-            </v-card-subtitle>
-            <v-card-actions>
-                <v-btn color="primary" @click="removeRecipe">Yes</v-btn>
-                <v-btn color="primary" @click="dialogRemove = false">No</v-btn>
-            </v-card-actions>
-            </v-card>
-        </v-dialog>
-
+                            <v-list-item v-for="ingridient in listIngridients" :key="ingridient" :active=true>
+                                <v-row no-gutters color="primary-darken-1">
+                                    <v-col cols="4" >
+                                        <v-card-text>
+                                            {{ingridient.name}}
+                                        </v-card-text>
+                                    </v-col>
+                                    <v-col cols="4" >
+                                        <v-card-text>
+                                            {{ingridient.cantidad}}
+                                        </v-card-text>
+                                    </v-col>
+                                    <v-col cols="4" >
+                                        <v-card-text>
+                                            {{ingridient.measurement}}
+                                        </v-card-text>
+                                    </v-col>
+                                </v-row>
+                            </v-list-item>
+                        </v-list>
+                    </v-card-item>
+        
+                    <v-card-actions>
+                        <v-btn 
+                            color="primary"  @click="dialog = false"
+                        >
+                            Close Dialog
+                        </v-btn>
+                        <v-btn 
+                            color="primary"  @click="dialogRemove = true"
+                        >
+                            Remove recipe
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog
+                v-model="dialogRemove"
+                width="auto"
+                persistent
+            >
+                <v-card :loading="loadingRemove">
+                    <v-card-title>
+                        Are you sure?
+                    </v-card-title>
+                    <v-card-subtitle>
+                        This recipe will be lost forever
+                    </v-card-subtitle>
+                    <v-card-actions>
+                        <v-btn color="primary" @click="removeRecipe">Yes</v-btn>
+                        <v-btn color="primary" @click="dialogRemove = false">No</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-btn>
     </div>
 </template>
@@ -130,7 +123,6 @@
                 listIngridients: []
             }
         },
-        
         methods: {
             async openDialog() {
                 this.loading = true

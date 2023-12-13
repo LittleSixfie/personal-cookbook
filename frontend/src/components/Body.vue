@@ -4,7 +4,7 @@
         <v-col cols="11">
           <v-sheet elevation="10" rounded="xl" >
             <v-sheet class="pa-3 bg-primary text-right" rounded="t-xl">
-              <v-btn @click="burron" icon >
+              <v-btn @click="filter" icon >
                 <v-icon>mdi-filter-check</v-icon>
               </v-btn>
               <v-btn class="ms-2" icon @click="reset">
@@ -59,7 +59,7 @@
       CardRecipe
     },
     methods: {
-      async burron() {
+      async filter() {
         try {
           //TODO: Multivalue aplicar
           const newRecipes = [];

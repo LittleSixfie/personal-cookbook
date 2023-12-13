@@ -10,7 +10,6 @@
             ></v-text-field>   
             <v-divider thickness="2"></v-divider>
             <br>
-
             <v-row no-gutters>
                 <v-col>
                     <v-file-input
@@ -24,11 +23,9 @@
                     ></v-file-input>
                 </v-col>
                 <v-col >
-                    
                     <v-container id="ingridient" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the ingridient image.</v-container>
                 </v-col>
             </v-row>
-            
             <v-divider thickness="2"></v-divider>
             <br>
             <v-row no-gutters>
@@ -44,11 +41,9 @@
                     ></v-file-input>
                 </v-col>
                 <v-col >
-                    
                     <v-container id="instructions" color="primary" ref="target" @paste="onPaste" style='cursor:pointer'>Click here and paste(Ctrl-V) the instructions image.</v-container>
                 </v-col>
             </v-row>
-            
             <v-divider thickness="2"></v-divider>
             <br>
             <v-row no-gutters>
@@ -141,52 +136,51 @@ import { createWorker } from 'tesseract.js';
                 this.sheet = true
             },
             onPaste(event) {
-                    const clipboardData = event.clipboardData || window.clipboardData;
-                    const items = clipboardData.items;
-                    for (let i = 0; i < items.length; i++) {
-                        if (items[i].type.indexOf("image") !== -1) {
-                            const imageFile = items[i].getAsFile();
-                            this.processImage(imageFile, event.srcElement.id);
-                        }
+                const clipboardData = event.clipboardData || window.clipboardData;
+                const items = clipboardData.items;
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf("image") !== -1) {
+                        const imageFile = items[i].getAsFile();
+                        this.processImage(imageFile, event.srcElement.id);
                     }
-                },
-                processImage(imageFile, id) {
-                    const reader = new FileReader();
-                    reader.onload = event => {
-                        switch (id) {
-                            case "instructions":
-                                console.log("instructions")
-                                this.imageDataURLInstructions = event.target.result;
-                                this.imageInstructions = [this.convertToFile(this.imageDataURLInstructions,"imageInstrucctions.jpg")];
-                                break;
-                            case "ingridient":
-                                console.log("ingirident")
-                                this.imageIngridientsURL = event.target.result;
-                                this.imageIngridients = [this.convertToFile(this.imageIngridientsURL,"imageIngridients.jpg")];
-                                break;
-                            default:
-                                console.log("default",id)
-                                this.imageDataURL = event.target.result;
-                                this.image = [this.convertToFile(this.imageDataURL,"imageRecipe.jpg")];
-                                
-                        }
-                    };
-                    reader.readAsDataURL(imageFile);
-                    
-                },
-                convertToFile(imageData, name) {
-                    const base64Data = imageData.split(',')[1];
-                    const binaryData = atob(base64Data);
-                    // Create a Uint8Array from the binary data
-                    const arrayBuffer = new ArrayBuffer(binaryData.length);
-                    const uint8Array = new Uint8Array(arrayBuffer);
-                    for (let i = 0; i < binaryData.length; i++) {
-                        uint8Array[i] = binaryData.charCodeAt(i);
-                    }
-                    // Create a Blob from the Uint8Array
-                    const blob = new Blob([uint8Array], { type: 'image/jpeg' });
-                    return new File([blob], name, { type: 'image/jpeg' })
                 }
+            },
+            processImage(imageFile, id) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    switch (id) {
+                        case "instructions":
+                            console.log("instructions")
+                            this.imageDataURLInstructions = event.target.result;
+                            this.imageInstructions = [this.convertToFile(this.imageDataURLInstructions,"imageInstrucctions.jpg")];
+                            break;
+                        case "ingridient":
+                            console.log("ingirident")
+                            this.imageIngridientsURL = event.target.result;
+                            this.imageIngridients = [this.convertToFile(this.imageIngridientsURL,"imageIngridients.jpg")];
+                            break;
+                        default:
+                            console.log("default",id)
+                            this.imageDataURL = event.target.result;
+                            this.image = [this.convertToFile(this.imageDataURL,"imageRecipe.jpg")];
+                            
+                    }
+                };
+                reader.readAsDataURL(imageFile);    
+            },
+            convertToFile(imageData, name) {
+                const base64Data = imageData.split(',')[1];
+                const binaryData = atob(base64Data);
+                // Create a Uint8Array from the binary data
+                const arrayBuffer = new ArrayBuffer(binaryData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < binaryData.length; i++) {
+                    uint8Array[i] = binaryData.charCodeAt(i);
+                }
+                // Create a Blob from the Uint8Array
+                const blob = new Blob([uint8Array], { type: 'image/jpeg' });
+                return new File([blob], name, { type: 'image/jpeg' })
+            }
         },
     }
 </script>

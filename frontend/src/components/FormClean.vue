@@ -48,37 +48,35 @@
                 
                 <v-sheet v-for="item in ingridientsList" :key="item.id" color="primary-darken-1" class="pa-2 mt-2 rounded-lg">
                     <v-text-field
-                    v-model="item.ingridientName"
-                    :rules="rules"
-                    label="Ingredient"
-                    variant="solo-filled"
-                    clearable
+                        v-model="item.ingridientName"
+                        :rules="rules"
+                        label="Ingredient"
+                        variant="solo-filled"
+                        clearable
                     ></v-text-field>
                     
                     <v-row no-gutters>
                         <v-col class="pr-1">
                             <v-text-field
-                            clearable
-                            v-model="item.quantity"
-                            :rules="justNumbers"
-                            label="Quantity"
-                            variant="solo-filled"
+                                clearable
+                                v-model="item.quantity"
+                                :rules="justNumbers"
+                                label="Quantity"
+                                variant="solo-filled"
                             ></v-text-field>
                         </v-col>
                         <v-col class="pl-1">
                             <v-combobox
-                            v-model="item.measurement"
-                            label="Measurement"
-                            :items="['unidades', 'gramos', 'mililitros']"
-                            :rules="rules"
-                            variant="solo-filled"
+                                v-model="item.measurement"
+                                label="Measurement"
+                                :items="['unidades', 'gramos', 'mililitros']"
+                                :rules="rules"
+                                variant="solo-filled"
                             ></v-combobox>
                         </v-col>
                     </v-row>
                     <v-btn v-if="id > 1" @click="removeRow(item.ingridientName)">Remove row</v-btn>
                 </v-sheet>
-
-
             </v-card>
             <v-btn @click="addRecipe" :loading="loading" type="submit" block class="mt-2" :disabled="!valid" >Submit</v-btn>
         </v-form>
