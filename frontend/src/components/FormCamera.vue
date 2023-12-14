@@ -70,20 +70,27 @@
                 label="Origen"
                 variant="solo-filled"
             ></v-text-field> 
-            <v-btn @click="leerImagenes" :loading="loading" type="submit" block class="mt-2" :disabled="!valid">Submit</v-btn>
+            <v-btn @click="leerImagenes" :loading="loading" type="submit" block class="" :disabled="!valid">Submit
+                <template v-slot:loader>
+                    <v-progress-linear class="mr-10 " :height="4" color="primary-darken-1" v-model="progress"></v-progress-linear>
+                </template>
+            </v-btn>
         </v-form>
     </v-sheet>
-    <v-bottom-sheet v-model="sheet">
+    <v-bottom-sheet v-model="form">
         <FormClean :title_nameFather="title_name" :instructionsFather="instructions" :imageFather="image" :originFather="origin" :ingridientsListFather="ingridientsList" :idFather="id" />
     </v-bottom-sheet>
 </template>
 <script>
 import FormClean from "./FormClean.vue";
 import { createWorker } from 'tesseract.js';
+import axios from "axios";
+
     export default {
         name: 'FormCamera',
         data: () => ({
             id: 1,
+            progress:0,
             title_name: '',
             origin: '',
             ingridientsList:[],
@@ -95,7 +102,7 @@ import { createWorker } from 'tesseract.js';
             imageDataURLInstructions:null,
             imageIngridientsURL:null,
             imageIngridients:null,
-            sheet:false,
+            form:false,
             valid : true,
             rules: [
                 value => {
@@ -112,28 +119,39 @@ import { createWorker } from 'tesseract.js';
         methods: {
             async leerImagenes() {
                 this.loading = true
-                        /*
-                            TODO: Practicamente mockeado lo del unIdades arreglar. Necesita meter mano desde bbdd.
-                        */ 
-                        const worker = await createWorker('spa',1);
-                        const textInstructions = await worker.recognize(this.imageDataURLInstructions);
-                        const textIngridients = await worker.recognize(this.imageIngridientsURL);
-                        textIngridients.data.lines.forEach(element => {
-                            var ingredientListTest = new Object();
-                            var textMeasurement = element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/) ? element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/)[0] : ""
-                            console.log(textMeasurement, textMeasurement.match(/[A-Za-z]+/))
-                            ingredientListTest.quantity = textMeasurement.match(/\d+/) ? textMeasurement.match(/\d+/)[0] : 0
-                            ingredientListTest.ingridientName= element.text.replace(ingredientListTest.quantity, '').replace(textMeasurement.match(/[A-Za-z]+/),"").trim()
-                            ingredientListTest.measurement= "unidades"
-                            this.ingridientsList.push(ingredientListTest)
-                        })
-                        this.id = textIngridients.data.lines.length
-                        this.instructions = textInstructions.data.text.replace(/\n/g, '')
-                        console.log(this.ingridientsList)
-                        await worker.terminate()
-                
+                var jobid = ""
+                this.funcion = function(m){
+                    if(m.jobId && jobid == "") {
+                        this.progress = (m.progress*100)/2
+                        if(this.progress == 50) jobid=m.userJobId
+                    } else if(m.jobId && jobid != "") {
+                        this.progress = ((m.progress*100)/2)+50
+                    }
+                }
+                const worker = await createWorker('spa',1,{
+                    logger: m => this.funcion(m)
+                });
+                const measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`)).data;
+                const textInstructions = await worker.recognize(this.imageDataURLInstructions);
+                const textIngridients = await worker.recognize(this.imageIngridientsURL);
+                this.progress=100
+                textIngridients.data.lines.forEach(element => {
+                    var ingridientLine = new Object();
+                    var textMeasurement = element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/) ? element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/)[0] : ""
+                    ingridientLine.quantity = textMeasurement.match(/\d+/) ? textMeasurement.match(/\d+/)[0] : 0
+                    if(textMeasurement.match(/[A-Za-z]+/)) {
+                        ingridientLine.measurement= measurementEnum.includes(textMeasurement.match(/[A-Za-z]+/)[0]) ? textMeasurement.match(/[A-Za-z]+/)[0] : "unidades"
+                    } else{
+                        ingridientLine.measurement= "unidades"
+                    }
+                    ingridientLine.ingridientName= element.text.replace(ingridientLine.quantity,'').replace(ingridientLine.measurement,"").trim()
+                    this.ingridientsList.push(ingridientLine)
+                })
+                this.id = textIngridients.data.lines.length
+                this.instructions = textInstructions.data.text.replace(/\n/g, '')
+                await worker.terminate()
                 this.loading = false
-                this.sheet = true
+                this.form = true
             },
             onPaste(event) {
                 const clipboardData = event.clipboardData || window.clipboardData;
@@ -150,20 +168,16 @@ import { createWorker } from 'tesseract.js';
                 reader.onload = event => {
                     switch (id) {
                         case "instructions":
-                            console.log("instructions")
                             this.imageDataURLInstructions = event.target.result;
                             this.imageInstructions = [this.convertToFile(this.imageDataURLInstructions,"imageInstrucctions.jpg")];
                             break;
                         case "ingridient":
-                            console.log("ingirident")
                             this.imageIngridientsURL = event.target.result;
                             this.imageIngridients = [this.convertToFile(this.imageIngridientsURL,"imageIngridients.jpg")];
                             break;
                         default:
-                            console.log("default",id)
                             this.imageDataURL = event.target.result;
                             this.image = [this.convertToFile(this.imageDataURL,"imageRecipe.jpg")];
-                            
                     }
                 };
                 reader.readAsDataURL(imageFile);    
