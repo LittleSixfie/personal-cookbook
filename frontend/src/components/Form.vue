@@ -68,7 +68,7 @@
                             <v-combobox
                                 v-model="item.measurement"
                                 label="Measurement"
-                                :items="['unidades', 'gramos', 'mililitros']"
+                                :items="measurementEnum"
                                 :rules="rules"
                                 variant="solo-filled"
                             ></v-combobox>
@@ -88,6 +88,7 @@ import axios from "axios";
         name: 'Form',
         data: () => ({
             id: 1,
+            measurementEnum: [],
             title_name: '',
             instructions: '',
             origin: '',
@@ -182,5 +183,9 @@ import axios from "axios";
                 
             }
         },
+        async beforeMount() {            
+            this.measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`)).data;
+            
+        }
     }
 </script>

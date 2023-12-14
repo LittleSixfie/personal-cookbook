@@ -9,6 +9,9 @@ routerIngridient.get('/', ingridientController.getAllIngridients);
 routerIngridient.post('/add', ingridientController.createIngridient);
 
 // Define a route for getting a single item by ID
+routerIngridient.get('/listEnums/', ingridientController.getListEnums);
+
+// Define a route for getting a single item by ID
 routerIngridient.get('/:id', ingridientController.getIngridientById);
 
 // Edit a entry of an object
