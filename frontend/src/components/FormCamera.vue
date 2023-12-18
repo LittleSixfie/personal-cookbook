@@ -132,15 +132,15 @@ import axios from "axios";
                     logger: m => this.funcion(m)
                 });
                 const measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`)).data;
-                const textInstructions = await worker.recognize(this.imageDataURLInstructions);
                 const textIngridients = await worker.recognize(this.imageIngridientsURL);
+                const textInstructions = await worker.recognize(this.imageDataURLInstructions);
                 this.progress=100
                 textIngridients.data.lines.forEach(element => {
                     var ingridientLine = new Object();
                     var textMeasurement = element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/) ? element.text.match(/\d+(\.\d+)?(\,\d+)?\s*\w+/)[0] : ""
                     ingridientLine.quantity = textMeasurement.match(/\d+/) ? textMeasurement.match(/\d+/)[0] : 0
                     if(textMeasurement.match(/[A-Za-z]+/)) {
-                        ingridientLine.measurement= measurementEnum.includes(textMeasurement.match(/[A-Za-z]+/)[0]) ? textMeasurement.match(/[A-Za-z]+/)[0] : "unidades"
+                        ingridientLine.measurement= measurementEnum.includes(textMeasurement.match(/[A-Za-z]+/)[0]) ? textMeasurement.match(/[A-Za-z]+/)[0] : ""
                     } else{
                         ingridientLine.measurement= "unidades"
                     }
