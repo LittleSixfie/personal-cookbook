@@ -39,14 +39,9 @@
           >
             submit
           </v-btn>
-
+          
+      
         </v-form>
-        <authenticator>
-          <template v-slot="{ user, signOut }">
-            <h1>Hello {{ user.username }}!</h1>
-            <button @click="signOut">Sign Out</button>
-          </template>
-        </authenticator>
 
     </v-app>
     <v-app v-if="false" id="inspire">
@@ -67,22 +62,16 @@
   import Footer from './components/Footer.vue'
   import Header from './components/Header.vue'
   import Body from './components/Body.vue'
-  import { signIn } from 'aws-amplify/auth';  
-  import {Amplify } from 'aws-amplify';
-  import { Authenticator } from "@aws-amplify/ui-vue";
-  import "@aws-amplify/ui-vue/styles.css";
+  import axios from "axios";
+  import { CognitoJwtVerifier } from "aws-jwt-verify";
+  
+  import {
+  	AuthenticationDetails,
+  	CognitoUserPool,
+  	CognitoUser,
+  	
+  } from 'amazon-cognito-identity-js';
 
-  Amplify.configure({
-    Auth: {
-      Cognito: {
-        region: "eu-central-1",
-        userPoolId: "eu-central-1_oi48gpngh",
-        userPoolWebClientId: "5ln2ofjtto6roloog2fbm3gmqa",
-      }
-    }
-  });
-  const currentConfig = Amplify.getConfig();
-  console.log(currentConfig)
   export default {
     name: 'App',
     data: () => ({  
@@ -92,6 +81,7 @@
       loading: false,
       user:"",
       form: false,
+      token: null,
       rules: {
           required: value => !!value || 'Required.',
           min: v => v.length >= 10 || 'Min 10 characters',
@@ -104,19 +94,64 @@
       Body,
     },
     methods: {
-      async onSubmit () {       
+      onSubmit () {       
         this.loading = true
         try {
-          const { isSignedIn, nextStep } = await signIn({ 
-            username:"RecipeAdminCookbook", 
-            password:"EstoEsSoloUnaPrueba@1" 
+          var authenticationData = {
+          	Username: 'RecipeBookAdmin',
+          	Password: 'EstoEsTemporal@1',
+          };
+          var authenticationDetails = new AuthenticationDetails(
+          	authenticationData
+          );
+          var poolData = {
+          	UserPoolId: 'eu-central-1_scuu9XSpL', // Your user pool id here
+          	ClientId: '4mqtgj4vshuql0vfb22of6c7n4', // Your client id here
+          };
+          var userPool = new CognitoUserPool(poolData);
+          var userData = {
+          	Username: 'RecipeBookAdmin',
+          	Pool: userPool,
+          };
+          
+          var cognitoUser = new CognitoUser(userData);
+          this.login=function(result) {
+          		this.token = result.getAccessToken().getJwtToken();
+          		console.log("login",this.token)
+          	}
+          cognitoUser.authenticateUser(authenticationDetails, {
+            
+          	onSuccess: async function(result) {
+          	  
+          		this.token = result.getAccessToken().getJwtToken();
+          		console.log(result)
+          		const verifier = CognitoJwtVerifier.create({
+                userPoolId: "eu-central-1_scuu9XSpL",
+                tokenUse: 'access',
+                clientId: "4mqtgj4vshuql0vfb22of6c7n4",
+                includeRawJwtInErrors: true,
+              });
+               console.log(this.token, "Tocken McToken")
+               try {
+                const payload = await verifier.verify(this.token);
+                console.log("Token is valid. Payload:", payload);
+                } catch (err) {
+  
+                  console.log("ERROR", err.message)
+                  throw err;
+                }
+          	},
+          	onFailure: function(err) {
+          		alert(err.message || JSON.stringify(err));
+            },
           });
-          console.log(isSignedIn,nextStep)
         } catch (error) {
           console.log('error signing in', error);
+        } finally{
+          console.log("finalmente")
         }
         setTimeout(() => (this.loading = false), 2000)
       },
-    }
+      }
   }
 </script>

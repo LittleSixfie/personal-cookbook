@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@aws-amplify/ui-vue": "^4.0.5",
+    "amazon-cognito-identity-js": "^6.3.7",
     "aws-amplify": "^6.0.7",
+    "aws-jwt-verify": "^4.0.0",
     "axios": "^1.6.0",
     "tesseract.js": "^5.0.3",
     "vite": "^4.5.0",
