@@ -113,7 +113,7 @@
     import axios from "axios";
     export default {
         name: 'DialogRecipe',
-        props: ['recipe', 'callCallReset','image'],
+        props: ['token', 'recipe', 'callCallReset','image'],
         data () {
             return {
                 dialog: false,
@@ -127,9 +127,9 @@
             async openDialog() {
                 this.loading = true
                 try {
-                    var responseIngridientList = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/recipe/${this.recipe.id}`);
+                    var responseIngridientList = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/recipe/${this.recipe.id}`, { headers: { Authorization: `Bearer ${this.token}` } })
                     for(var ingridient of responseIngridientList.data){
-                        var responseIngridient = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/${ingridient.idingrediente}`);
+                        var responseIngridient = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/${ingridient.idingrediente}`, { headers: { Authorization: `Bearer ${this.token}` } })
                         ingridient["measurement"] = responseIngridient.data[0].unidades
                         ingridient["name"] = responseIngridient.data[0].nombre
                     }
@@ -146,13 +146,13 @@
                 try {
                     //We check if we have to erase some ingridientes.
                     for(var ingridient of this.listIngridients){
-                        var responseIngridient = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${ingridient.idingrediente}`);
-                        await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/${ingridient.id}`)
+                        var responseIngridient = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${ingridient.idingrediente}`, { headers: { Authorization: `Bearer ${this.token}` } })
+                        await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/${ingridient.id}`, { headers: { Authorization: `Bearer ${this.token}` } })
                         if(responseIngridient.data.length <= 1) {
-                            await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/ingridients/${ingridient.idingrediente}`)
+                            await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/ingridients/${ingridient.idingrediente}`, { headers: { Authorization: `Bearer ${this.token}` } })
                         }
                     }
-                    await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/recipes/${this.listIngridients[0].idreceta}`)
+                    await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/recipes/${this.listIngridients[0].idreceta}`, { headers: { Authorization: `Bearer ${this.token}` } })
                     this.callCallReset();
                 } catch (e) {
                     console.log("ERROR removeDialog", e);

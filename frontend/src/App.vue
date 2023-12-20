@@ -1,12 +1,12 @@
 <template>
-    <v-app v-if="!dialog">
-      <Login @mensaje-al-padre="recibirMensajeDelHijo" />
+    <v-app v-if="!token">
+      <Login @emit-token="getToken" />
     </v-app>
-    <v-app v-if="dialog" id="inspire">
-      <Header />
+    <v-app v-if="token" id="inspire">
+      <Header :token="token"/>
       <v-main>
         <!--  -->
-        <Body /> 
+        <Body :token="token"/> 
       </v-main>
     </v-app>
 </template>
@@ -21,12 +21,10 @@
   import Header from './components/Header.vue'
   import Body from './components/Body.vue'
   import Login from './components/Login.vue'
-  
-
   export default {
     name: 'App',
     data: () => ({  
-      dialog:"",
+      token:"",
     }),
     components: {
       Footer,
@@ -35,10 +33,9 @@
       Login
     },
     methods:{
-      recibirMensajeDelHijo(mensaje) {
-        this.dialog=mensaje
+      getToken(tokenChild) {
+        this.token=tokenChild
       }
     }
-    
   }
 </script>

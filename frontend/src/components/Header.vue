@@ -34,7 +34,7 @@
                 <v-toolbar-title>Add Recipe</v-toolbar-title>
                 <v-spacer></v-spacer>
                 </v-toolbar>
-                <Form />
+                <Form :token="token"/>
             </v-card>
             </v-dialog>
 
@@ -67,7 +67,7 @@
                         <v-toolbar-title>Add Recipe with Image</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
-                    <FormCamera />
+                    <FormCamera :token="token"/>
                 </v-card>
             </v-dialog>
             <v-switch @change="toggleTheme" label="Theme" inset class="mt-5"></v-switch>
@@ -77,20 +77,20 @@
 </template>
 
 <script setup>
-import { useTheme } from 'vuetify'
-const theme = useTheme()
-function toggleTheme () {
-    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
-}
+    import { useTheme } from 'vuetify'
+    const theme = useTheme()
+    function toggleTheme () {
+        theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+    }
 </script>
 
 <script>
     import Form from './Form.vue'
     import FormCamera from './FormCamera.vue'
-    
     export default {
         name: 'Header',
         isDark:false,
+        props: ['token'],
         data: () => ({  
             dialog:false, 
             dialogCamera:false,

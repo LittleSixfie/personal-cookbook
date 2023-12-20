@@ -16,14 +16,14 @@
         <v-text-field
             v-model="password"
             :readonly="loading"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[rules.required, rules.min]"
-            :type="show1 ? 'text' : 'password'"
+            :type="show ? 'text' : 'password'"
             name="input-10-1"
             label="Normal with hint text"
             hint="At least 8 characters"
             counter
-            @click:append="show1 = !show1"
+            @click:append="show = !show"
             clearable
         ></v-text-field>
         <v-btn
@@ -41,20 +41,13 @@
 </template>
 
 <script>
-    import axios from "axios";
-    import { CognitoJwtVerifier } from "aws-jwt-verify";
-    
-    import {
-        AuthenticationDetails,
-        CognitoUserPool,
-        CognitoUser,
-    } from 'amazon-cognito-identity-js';
+    import { CognitoJwtVerifier } from "aws-jwt-verify";    
+    import {AuthenticationDetails,CognitoUserPool,CognitoUser} from 'amazon-cognito-identity-js';
 
     export default {
-        
         data: () => ({  
             name: 'Login',
-            show1: false,
+            show: false,
             password: '',
             loading: false,
             user:"",
@@ -86,25 +79,12 @@
                     
                     var cognitoUser = new CognitoUser(userData);
                     var tokenTemp
+                    
                     cognitoUser.authenticateUser(authenticationDetails, {
                         onSuccess:  function(result) {
-                            this.token = result.getAccessToken().getJwtToken();
-                            const verifier = CognitoJwtVerifier.create({
-                                userPoolId: "eu-central-1_scuu9XSpL",
-                                tokenUse: 'access',
-                                clientId: "4mqtgj4vshuql0vfb22of6c7n4",
-                                includeRawJwtInErrors: true,
-                            });
-                            console.log(this.token, "Tocken McToken")
-                            try {
-                                const payload = verifier.verify(this.token);
-                                tokenTemp = this.token
-                                console.log("Token is valid. Payload:", payload);
-                            } catch (err) {
-                                console.log("ERROR", err.message)
-                                throw err;
-                            }
-                            },
+                            tokenTemp = result.getAccessToken().getJwtToken();
+                            console.log("CANNNNON", tokenTemp)
+                        },
                         onFailure: function(err) {
                             alert(err.message || JSON.stringify(err));
                         },
@@ -116,13 +96,12 @@
                 }
                 setTimeout(() => {
                     this.loading = false
-                    
                     this.daddy(tokenTemp) 
                 }, 2000)
             },
             daddy(token) {
                 console.log("paraoDaddy")
-                this.$emit('mensaje-al-padre', token);
+                this.$emit('emit-token', token);
             }
         } 
     }

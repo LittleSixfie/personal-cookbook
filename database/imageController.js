@@ -29,7 +29,7 @@ const imageController = {
     addImage: async (req, res) => {
         let dbClient = await connectDB()
         try {
-            const itemId = req.params.id;
+            const itemId = req.originalUrl.match(/\d+/)[0];
             const requestData = req.body; 
             console.log(itemId, req.files)
             const queryResult = await dbClient.query('UPDATE recipe SET image=$2 WHERE id=$1;', [itemId, req.files[0].buffer])

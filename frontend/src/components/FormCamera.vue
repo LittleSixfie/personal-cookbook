@@ -78,16 +78,17 @@
         </v-form>
     </v-sheet>
     <v-bottom-sheet v-model="form">
-        <FormClean :title_nameFather="title_name" :instructionsFather="instructions" :imageFather="image" :originFather="origin" :ingridientsListFather="ingridientsList" :idFather="id" />
+        <FormClean :token="token" :title_nameFather="title_name" :instructionsFather="instructions" :imageFather="image" :originFather="origin" :ingridientsListFather="ingridientsList" :idFather="id" />
     </v-bottom-sheet>
 </template>
 <script>
-import FormClean from "./FormClean.vue";
-import { createWorker } from 'tesseract.js';
-import axios from "axios";
+    import FormClean from "./FormClean.vue";
+    import { createWorker } from 'tesseract.js';
+    import axios from "axios";
 
     export default {
         name: 'FormCamera',
+        props: ['token'],
         data: () => ({
             id: 1,
             progress:0,
@@ -131,7 +132,7 @@ import axios from "axios";
                 const worker = await createWorker('spa',1,{
                     logger: m => this.funcion(m)
                 });
-                const measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`)).data;
+                const measurementEnum = ( await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`, { headers: { Authorization: `Bearer ${this.token}` } }) ).data;
                 const textIngridients = await worker.recognize(this.imageIngridientsURL);
                 const textInstructions = await worker.recognize(this.imageDataURLInstructions);
                 this.progress=100

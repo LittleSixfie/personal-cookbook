@@ -36,7 +36,7 @@
             md="3"
             lg="2"
           >
-          <CardRecipe :recipe="recipe" :callReset="reset" ></CardRecipe>
+          <CardRecipe :token="token" :recipe="recipe" :callReset="reset" ></CardRecipe>
           </v-col>
         </v-row>
     </v-main>
@@ -47,6 +47,7 @@
   import CardRecipe from "./CardRecipe.vue";
   export default {
     name: "Body",
+    props: ['token'],
     data() {
       return {
         recipes: [],
@@ -64,7 +65,7 @@
           //TODO: Multivalue aplicar
           const newRecipes = [];
           for (const chip of this.chipFilter) {
-            const response = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`);
+            const response = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`, { headers: { Authorization: `Bearer ${this.token}` } })
             for (const idReceta of response.data) {
               newRecipes.push(this.recipes.find(element => element.id == idReceta.idreceta));
             }
@@ -76,7 +77,7 @@
       },
       async reset() {
         try {
-          const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`);
+          const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
           this.recipes = responseAllRecipes.data;
           this.chipFilter = [];
         } catch (e) {
@@ -85,13 +86,13 @@
         }
       }
     },
-    async created() {
+    async beforeMount() {
       try {
-        
-        const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`);
+        const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
         this.recipes = responseAllRecipes.data;
-        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients`);
+        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients`, { headers: { Authorization: `Bearer ${this.token}` } });
         this.ingridients = responseAllIngridients.data;
+        console.log("TOKEN BODY", this.token)
       } catch (e) {
         alert(e.response);
         this.errors.push(e);
