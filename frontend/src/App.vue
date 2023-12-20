@@ -1,6 +1,10 @@
 <template>
+  <v-app>
     <v-app v-if="!token">
-      <Login @emit-token="getToken" />
+      <Header :token="token"/>
+      <v-main>
+        <Login @emit-token="getToken" />
+      </v-main>
     </v-app>
     <v-app v-if="token" id="inspire">
       <Header :token="token"/>
@@ -9,6 +13,7 @@
         <Body :token="token"/> 
       </v-main>
     </v-app>
+  </v-app>
 </template>
 
 <script setup>

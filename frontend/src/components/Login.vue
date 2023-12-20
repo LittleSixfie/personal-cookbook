@@ -41,7 +41,6 @@
 </template>
 
 <script>
-    import { CognitoJwtVerifier } from "aws-jwt-verify";    
     import {AuthenticationDetails,CognitoUserPool,CognitoUser} from 'amazon-cognito-identity-js';
 
     export default {
@@ -53,6 +52,7 @@
             user:"",
             form: false,
             token: null,
+            congitouser:null,
             rules: {
                 required: value => !!value || 'Required.',
                 min: v => v.length >= 10 || 'Min 10 characters',
@@ -79,7 +79,7 @@
                     
                     var cognitoUser = new CognitoUser(userData);
                     var tokenTemp
-                    
+                    this.congitouser = cognitoUser
                     cognitoUser.authenticateUser(authenticationDetails, {
                         onSuccess:  function(result) {
                             tokenTemp = result.getAccessToken().getJwtToken();
@@ -102,6 +102,12 @@
             daddy(token) {
                 console.log("paraoDaddy")
                 this.$emit('emit-token', token);
+            },
+            signOut() {
+                console.log("fuera")
+                cognitoUser.signOut();
+                this.token=""
+                this.$emit('emit-token', "");
             }
         } 
     }

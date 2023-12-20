@@ -1,7 +1,17 @@
 <template>
     <v-app-bar class="pa-3 bg-primary">
-        <v-app-bar-title></v-app-bar-title>
-        <template v-slot:append >
+        <v-app-bar-title>RecipeBook</v-app-bar-title>
+        
+        <template v-if="token" v-slot:append >
+        <v-btn
+            variant="elevated"
+            icon
+            dark
+            class="mr-2"
+            @click="close" 
+        >
+            <v-icon>mdi-exit-to-app</v-icon>
+        </v-btn>
         <v-dialog
             v-model="dialog"
             fullscreen
@@ -71,8 +81,8 @@
                 </v-card>
             </v-dialog>
             <v-switch @change="toggleTheme" label="Theme" inset class="mt-5"></v-switch>
-            </template>
-            <v-app-bar-title>RecipeBook</v-app-bar-title>
+        </template>
+        
     </v-app-bar>
 </template>
 
@@ -103,7 +113,9 @@
         }),
         components: {
             Form,
-            FormCamera
+            FormCamera,
+            
         },
+        
     }
 </script>

@@ -186,8 +186,8 @@ import axios from "axios";
             }
         },
         async beforeMount() {            
-            this.measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`), { headers: { Authorization: `Bearer ${this.token}` } }).data;
-            
+            const measurementEnum2 = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`, { headers: { Authorization: `Bearer ${this.token}` } }) ;
+            this.measurementEnum =   measurementEnum2.data
         }
     }
 </script>
