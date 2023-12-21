@@ -11,7 +11,6 @@ async function connectDB() {
         password: process.env.DB_PASS,
     });
     await dbClient.connect()
-    console.log("connected")
     return dbClient
 }
 
@@ -20,7 +19,7 @@ const recipeController = {
         let dbClient = await connectDB()
         try {
             const queryResult = await dbClient.query('SELECT id, title_name, instructions, origin FROM recipe')
-            res.json(queryResult.rows);
+            res.send(queryResult.rows);
         } catch (err) {
             console.error(err);
         } finally {

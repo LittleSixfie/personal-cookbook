@@ -86,6 +86,7 @@
 import axios from "axios";
     export default {
         name: 'Form',
+        props: ['token'],
         data: () => ({
             id: 1,
             measurementEnum: [],
@@ -110,21 +111,22 @@ import axios from "axios";
             async addRecipeDatabase() {
                 this.loading = true
                 try {
-                    const responseRecipe = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions});
+                    const responseRecipe = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions}, { headers: { Authorization: `Bearer ${this.token}` } });
                     console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
                     const formData = new FormData();
                     formData.append('image', this.image[0]);
                     const responseImage = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/image/add/${responseRecipe.data.rows[0].id}`, formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
+                                'Authorization': `Bearer ${this.token}`
                             },
                         });
                     console.log("IMAGEN",responseImage)
                     await this.ingridientsList.forEach(async element => {
                         try{
-                            const responseIngredient = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement});
+                            const responseIngredient = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement}, { headers: { Authorization: `Bearer ${this.token}` } });
                             console.log("INGREDIENTE SUELTO", responseIngredient.data)
-                            const responseListIngredients = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity});
+                            const responseListIngredients = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity}, { headers: { Authorization: `Bearer ${this.token}` } });
                             console.log("INGREDIENTE LISTA", responseListIngredients.data)
                         } catch(e) {
                             alert(e)
@@ -137,7 +139,6 @@ import axios from "axios";
                 this.loading = false
             },
             addRow() {
-                console.log("added");
                 this.id += 1;
                 this.ingridientsList.push({
                     ingridientName: "",
@@ -146,7 +147,6 @@ import axios from "axios";
                 });
             },
             removeRow(itemName) {
-                console.log("removed", itemName);
                 this.ingridientsList = this.ingridientsList.filter(item => item.ingridientName !== itemName);
                 this.id -= 1;
             
@@ -177,15 +177,14 @@ import axios from "axios";
                     const blob = new Blob([uint8Array], { type: 'image/jpeg' });
                     // Create a File from the Blob
                     this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
-                    console.log(event, this.image, blob)
                 };
                 reader.readAsDataURL(imageFile);
                 
             }
         },
         async beforeMount() {            
-            this.measurementEnum = (await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`)).data;
-            
+            const measurementEnum2 = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/listEnums/`, { headers: { Authorization: `Bearer ${this.token}` } }) ;
+            this.measurementEnum =   measurementEnum2.data
         }
     }
 </script>

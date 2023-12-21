@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import multer from 'multer'
+import auth from './middleware/auth.js';
 import routerDefault from './routes/default.js'
 import routerRecipe from './routes/recipes.js'
 import routerIngridient from './routes/ingridients.js'
@@ -13,11 +14,12 @@ const app = express();
 
 app.use(cors());
 
-app.use('/', express.json(), routerDefault);
-app.use('/recipes', express.json(), routerRecipe);
-app.use('/ingridients', express.json(), routerIngridient);
-app.use('/image', upload.any(), routerImage);
-app.use('/ingridientsList', express.json(), routerIngridientList);
+const middleware = [auth, express.json()]
+app.use('/', middleware, routerDefault);
+app.use('/recipes', middleware , routerRecipe);
+app.use('/ingridients', middleware, routerIngridient);
+app.use('/ingridientsList', middleware, routerIngridientList);
+app.use('/image', [auth, upload.any() ], routerImage);
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
