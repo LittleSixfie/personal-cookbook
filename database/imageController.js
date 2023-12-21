@@ -31,10 +31,8 @@ const imageController = {
         try {
             const itemId = req.originalUrl.match(/\d+/)[0];
             const requestData = req.body; 
-            console.log(itemId, req.files)
             const queryResult = await dbClient.query('UPDATE recipe SET image=$2 WHERE id=$1;', [itemId, req.files[0].buffer])
             const queryResultTEST = await dbClient.query('SELECT * FROM recipe WHERE id=$1', [itemId])
-            console.log("Despues", queryResultTEST.rows[0].image )
             res.status(201).json(queryResultTEST)
         } catch (err) {
             console.error(err);

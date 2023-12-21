@@ -139,7 +139,6 @@ import axios from "axios";
                 this.loading = false
             },
             addRow() {
-                console.log("added");
                 this.id += 1;
                 this.ingridientsList.push({
                     ingridientName: "",
@@ -148,7 +147,6 @@ import axios from "axios";
                 });
             },
             removeRow(itemName) {
-                console.log("removed", itemName);
                 this.ingridientsList = this.ingridientsList.filter(item => item.ingridientName !== itemName);
                 this.id -= 1;
             
@@ -179,7 +177,6 @@ import axios from "axios";
                     const blob = new Blob([uint8Array], { type: 'image/jpeg' });
                     // Create a File from the Blob
                     this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
-                    console.log(event, this.image, blob)
                 };
                 reader.readAsDataURL(imageFile);
                 

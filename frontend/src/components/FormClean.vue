@@ -141,7 +141,6 @@ import axios from "axios";
                 this.loading = false
             },
             addRow() {
-                console.log("added");
                 this.id += 1;
                 this.ingridientsList.push({
                     ingridientName: "",
@@ -151,7 +150,6 @@ import axios from "axios";
                 console.log(this.ingridientsList)
             },
             removeRow(itemName) {
-                console.log("removed", itemName);
                 this.ingridientsList = this.ingridientsList.filter(item => item.ingridientName !== itemName);
                 console.log(this.ingridientsList)
                 this.id -= 1;
@@ -185,7 +183,6 @@ import axios from "axios";
                     // Create a File from the Blob
                     this.image = [new File([blob], 'pastedFile.jpg', { type: 'image/jpeg' })];
                     
-                    console.log(event, this.image, blob)
                 };
                 reader.readAsDataURL(imageFile);
                 

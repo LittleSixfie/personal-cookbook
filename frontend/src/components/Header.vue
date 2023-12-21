@@ -122,17 +122,15 @@
             async close(){
                 var cong = this.congito
                 var token = this.token
-                console.log("des", cong)
                 await cong.globalSignOut({
                     onSuccess: async function (result) {
                         console.log('Global sign-out successful', result);
-                        console.log("des", cong)
                         try {
-                            await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}`, kill : "true" } })
+                            await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${token}`, kill : "true" } })
                         } catch (err){
-                            console.log(err)
+                            
                         }
-                        //window.location.reload();
+                        window.location.reload();
                     },
                     onFailure: function (err) {
                         console.log('Global sign-out failed', err);

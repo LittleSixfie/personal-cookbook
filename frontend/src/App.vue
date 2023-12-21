@@ -42,7 +42,6 @@
       getToken(tokenChild, congitoUser) {
         this.congito= congitoUser
         this.token=tokenChild
-        console.log("DADDDDDDDDDDDDDDY",this.congito)
       }
     }
   }

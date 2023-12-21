@@ -99,11 +99,10 @@
                     setTimeout(() => {
                         this.loading = false
                         this.daddy(tokenTemp) 
-                    }, 2000)
+                    }, 3000)
                 } catch (error) {
                     console.log('error signing in', error);
                 } 
-                this.loading = false
             },
             daddy(token) {
                 this.$emit('emit-token', token, this.congitouser);

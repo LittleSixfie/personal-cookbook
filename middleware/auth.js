@@ -11,26 +11,21 @@ async function auth(req,res,next) {
             tokenUse: 'access',
             includeRawJwtInErrors: true,
         });
-        console.log(req.originalUrl)
         try {
             const token=req.headers.authorization.replace("Bearer","").trim()
-            console.log(tokenBlacklist, token && !tokenBlacklist.has(token), req.headers.kill, )
             if(token && !tokenBlacklist.has(token)){
                 if(req.headers.kill){
-                    console.log(req.headers)
                     tokenBlacklist.add(token)
-                    console.log(tokenBlacklist)
+                    throw Error("Added to blacklist");
                 } else {
                     const payload = await verifier.verify(token);
-                    console.log("Token is valid. Payload:");
                     next()
                 }
             } else {
-                throw Error("no valid token");
+                throw Error("No valid token");
             }
         } catch(err){
-            console.log("ERROR:", err)
-            //console.log(req)
+            console.log("ERROR:", err.message)
             return res.status(403).json({ statusCode: 403, message: "Forbidden" });
         } finally {
             
