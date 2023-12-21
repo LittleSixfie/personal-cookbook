@@ -14,7 +14,7 @@ const app = express();
 
 app.use(cors());
 
-const middleware = [express.json(), auth]
+const middleware = [auth, express.json()]
 app.use('/', middleware, routerDefault);
 app.use('/recipes', middleware , routerRecipe);
 app.use('/ingridients', middleware, routerIngridient);

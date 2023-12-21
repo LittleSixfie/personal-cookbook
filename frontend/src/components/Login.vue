@@ -1,43 +1,51 @@
 <template>
-    <v-form
-        v-model="form"
-        @submit.prevent="onSubmit"
-    >
-        <v-text-field
-            v-model="user"
-            label="Email address"
-            placeholder="johndoe@gmail.com"
-            type="email"
-            :rules="[rules.required]"
-            :readonly="loading"
-            clearable
-        ></v-text-field>
+    <v-sheet class="pa-12" rounded>
+        <v-card class="mx-auto px-6 py-8" max-width="" color="primary">
+            <v-form
+                v-model="form"
+                @submit.prevent="onSubmit"
+            >
+                <v-text-field
+                    v-model="user"
+                    label="Email address"
+                    placeholder="johndoe@gmail.com"
+                    type="email"
+                    :rules="[rules.required]"
+                    :readonly="loading"
+                    clearable
+                    bg-color="white"
+                    class="pb-2"
+                ></v-text-field>
 
-        <v-text-field
-            v-model="password"
-            :readonly="loading"
-            :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            :type="show ? 'text' : 'password'"
-            name="input-10-1"
-            label="Normal with hint text"
-            hint="At least 8 characters"
-            counter
-            @click:append="show = !show"
-            clearable
-        ></v-text-field>
-        <v-btn
-            :disabled="!form"
-            :loading="loading"
-            block
-            color="success"
-            size="large"
-            type="submit"
-            variant="elevated"
-        >
-        submit
-        </v-btn>
-    </v-form>
+                <v-text-field
+                    v-model="password"
+                    :readonly="loading"
+                    :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="[rules.required, rules.min]"
+                    :type="show ? 'text' : 'password'"
+                    name="input-10-1"
+                    label="Normal with hint text"
+                    hint="At least 8 characters"
+                    counter
+                    bg-color="white"
+                    @click:append="show = !show"
+                    clearable
+                    class="pb-2"
+                ></v-text-field>
+                <v-btn
+                    :disabled="!form"
+                    :loading="loading"
+                    block
+                    color=""
+                    size="large"
+                    type="submit"
+                    variant="elevated"
+                >
+                submit
+                </v-btn>
+            </v-form>
+        </v-card>
+    </v-sheet>
 </template>
 
 <script>
@@ -64,8 +72,8 @@
                 this.loading = true
                 try {
                     var authenticationDetails = new AuthenticationDetails({
-                        Username: 'RecipeBookAdmin',
-                        Password: 'EstoEsTemporal@1',
+                        Username: this.user,
+                        Password: this.password,
                     });
                     var poolData = {
                         UserPoolId: 'eu-central-1_scuu9XSpL', // Your user pool id here
@@ -73,7 +81,7 @@
                     };
                     var userPool = new CognitoUserPool(poolData);
                     var userData = {
-                        Username: 'RecipeBookAdmin',
+                        Username: this.user,
                         Pool: userPool,
                     };
                     
@@ -83,32 +91,23 @@
                     cognitoUser.authenticateUser(authenticationDetails, {
                         onSuccess:  function(result) {
                             tokenTemp = result.getAccessToken().getJwtToken();
-                            console.log("CANNNNON", tokenTemp)
                         },
                         onFailure: function(err) {
                             alert(err.message || JSON.stringify(err));
                         },
                     });
+                    setTimeout(() => {
+                        this.loading = false
+                        this.daddy(tokenTemp) 
+                    }, 2000)
                 } catch (error) {
                     console.log('error signing in', error);
-                } finally{
-                    console.log("finalmente")
-                }
-                setTimeout(() => {
-                    this.loading = false
-                    this.daddy(tokenTemp) 
-                }, 2000)
+                } 
+                this.loading = false
             },
             daddy(token) {
-                console.log("paraoDaddy")
-                this.$emit('emit-token', token);
+                this.$emit('emit-token', token, this.congitouser);
             },
-            signOut() {
-                console.log("fuera")
-                cognitoUser.signOut();
-                this.token=""
-                this.$emit('emit-token', "");
-            }
         } 
     }
 </script>

@@ -92,7 +92,6 @@
         this.recipes = responseAllRecipes.data;
         const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients`, { headers: { Authorization: `Bearer ${this.token}` } });
         this.ingridients = responseAllIngridients.data;
-        console.log("TOKEN BODY", this.token)
       } catch (e) {
         alert(e.response);
         this.errors.push(e);

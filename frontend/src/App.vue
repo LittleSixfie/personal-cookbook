@@ -7,7 +7,7 @@
       </v-main>
     </v-app>
     <v-app v-if="token" id="inspire">
-      <Header :token="token"/>
+      <Header :token="token" :congito="congito"/>
       <v-main>
         <!--  -->
         <Body :token="token"/> 
@@ -30,6 +30,7 @@
     name: 'App',
     data: () => ({  
       token:"",
+      congito:null
     }),
     components: {
       Footer,
@@ -38,8 +39,10 @@
       Login
     },
     methods:{
-      getToken(tokenChild) {
+      getToken(tokenChild, congitoUser) {
+        this.congito= congitoUser
         this.token=tokenChild
+        console.log("DADDDDDDDDDDDDDDY",this.congito)
       }
     }
   }
