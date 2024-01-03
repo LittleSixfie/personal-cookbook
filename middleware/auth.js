@@ -1,5 +1,5 @@
 import { CognitoJwtVerifier } from "aws-jwt-verify";    
-import 'dotenv/config'
+import 'dotenv/config';
 
 const tokenBlacklist = new Set(); 
 
@@ -12,10 +12,10 @@ async function auth(req,res,next) {
             includeRawJwtInErrors: true,
         });
         try {
-            const token=req.headers.authorization.replace("Bearer","").trim()
+            const token=req.headers.authorization.replace("Bearer","").trim();
             if(token && !tokenBlacklist.has(token)){
                 if(req.headers.kill){
-                    tokenBlacklist.add(token)
+                    tokenBlacklist.add(token);
                     throw Error("Added to blacklist");
                 } else {
                     const payload = await verifier.verify(token);

@@ -118,6 +118,9 @@
             Form,
             FormCamera,
         },
+        beforeDestroy() {
+            window.removeEventListener('beforeunload', this.close);
+        },  
         methods:{
             async close(){
                 var cong = this.congito
