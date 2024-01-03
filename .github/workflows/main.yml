@@ -1,0 +1,31 @@
+name: Deploy Personal-Cookbook
+run-name: ${{ github.event.head_commit.message }} is testing out GitHub Actions 🚀
+on:
+  push:
+    branches:
+    - master
+jobs:
+  Despliegue:
+    runs-on: ubuntu-latest
+    environment: master 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4.1.1
+      - name: setting up node
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version: 18
+      - name: NPM install
+        run: npm install
+      - name: NPM Build
+        run: npm run build
+      - name: Upload S3
+        uses: reggionick/s3-deploy@v4
+        with:
+          folder: dist
+          bucket: ${{ secrets.S3_BUCKET }}
+          bucket-region: eu-central-1
+      
