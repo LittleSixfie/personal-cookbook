@@ -20,6 +20,8 @@ jobs:
           node-version: 18
       - name: cd to the folder
         run: cd ./frontend/
+      - name: ls
+        run: ls
       - name: NPM install
         run: npm install
       - name: NPM Build
