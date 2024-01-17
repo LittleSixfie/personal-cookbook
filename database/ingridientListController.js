@@ -113,9 +113,4 @@ const ingridientListController = {
     },
 };
 
-
-/*
-SELECT idingrediente, nombre, COUNT(idingrediente) 
-FROM lista_ingredientes, ingrediente WHERE idingrediente = ingrediente.id GROUP BY idingrediente, nombre ORDER BY COUNT DESC, nombre;
-*/
 export default ingridientListController

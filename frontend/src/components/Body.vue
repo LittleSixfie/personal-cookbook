@@ -69,14 +69,12 @@
       async filter() {
         try {
           //TODO: Multivalue aplicar
-          const ingdridientQuery = [];
+          const ingridientQuery = [];
           for (const chip of this.chipFilter) {
-            ingdridientQuery.push(this.ingridients[chip].idingrediente)
+            ingridientQuery.push(this.ingridients[chip].idingrediente)
           }
-          const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingdridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
-          console.log(this.recipes)
+          const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
           this.recipes = responseFilter.data
-          console.log(this.recipes)
         } catch (e) {
           alert(e);
         }
