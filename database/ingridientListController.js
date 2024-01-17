@@ -26,6 +26,17 @@ const ingridientListController = {
             await dbClient.end()
         }
     },
+    getIngridientListMostUsed: async (req, res) => {
+        let dbClient = await connectDB()
+        try {
+            const queryResult = await dbClient.query('SELECT idingrediente, nombre, COUNT(idingrediente) FROM lista_ingredientes, ingrediente WHERE idingrediente = ingrediente.id GROUP BY idingrediente, nombre ORDER BY COUNT DESC, nombre LIMIT 10;')
+            res.json(queryResult.rows);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            await dbClient.end()
+        }
+    },
     getIngridientListById: async (req, res) => {
         const itemId = req.params.id;
         let dbClient = await connectDB()

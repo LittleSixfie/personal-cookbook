@@ -5,6 +5,8 @@ const routerRecipe = express.Router();
 
 routerRecipe.get('/', recipeController.getAllRecipes);
 
+routerRecipe.get('/filter/:id', recipeController.filterRecipeByIds);
+
 // POST: add to a table
 routerRecipe.post('/add', recipeController.createRecipe);
 

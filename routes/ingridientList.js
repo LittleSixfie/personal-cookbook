@@ -5,6 +5,8 @@ const routerIngridientList = express.Router();
 
 routerIngridientList.get('/', ingridientListController.getAllIngridientsList);
 
+routerIngridientList.get('/mostUsed', ingridientListController.getIngridientListMostUsed);
+
 // POST: add to a table
 routerIngridientList.post('/add', ingridientListController.createIngridientList);
 

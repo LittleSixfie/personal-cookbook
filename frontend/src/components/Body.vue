@@ -2,29 +2,35 @@
     <v-main>      
       <v-row justify="center">
         <v-col cols="11">
-          <v-sheet elevation="10" rounded="xl" >
-            <v-sheet class="pa-3 bg-primary text-right" rounded="t-xl">
-              <v-btn @click="filter" icon >
-                <v-icon>mdi-filter-check</v-icon>
-              </v-btn>
-              <v-btn class="ms-2" icon @click="reset">
-                <v-icon>mdi-reload</v-icon>
-              </v-btn>
+          <v-sheet class="ma-0 pa-0" elevation="5" rounded="xl" fluid>
+              <v-row class="ma-0 pa-0" align="center" justify="center"  >
+                <v-col cols="12" sm="9" md="10" lg="11">
+                  
+                    <v-chip-group
+                      class=""
+                      multiple
+                      v-model="chipFilter"
+                    >
+                      <v-chip
+                        v-for="n in ingridients"
+                        :key="n"
+                        filter
+                      > {{n.nombre}}</v-chip>
+                    </v-chip-group>
+                
+                </v-col>
+                <v-col cols="12" sm="3" md="2" lg="1" class=" bg-primary rounded-xl fill-height" >
+                    <v-container>
+                      <v-btn class="ml-1" @click="filter" icon >
+                        <v-icon>mdi-filter-check</v-icon>
+                      </v-btn>
+                      <v-btn class="ma-1" icon @click="reset">
+                        <v-icon>mdi-reload</v-icon>
+                      </v-btn>
+                    </v-container>
+                </v-col>
+              </v-row>
             </v-sheet>
-            <div class="pa-4">
-              <v-chip-group
-                cols="12"
-                multiple
-                v-model="chipFilter"
-              >
-                <v-chip
-                  v-for="n in ingridients"
-                  :key="n"
-                  filter
-                > {{n.nombre}}</v-chip>
-              </v-chip-group>
-            </div>
-          </v-sheet>
         </v-col>
       </v-row>
         <v-row class="ma-10">
@@ -63,14 +69,12 @@
       async filter() {
         try {
           //TODO: Multivalue aplicar
-          const newRecipes = [];
+          const ingridientQuery = [];
           for (const chip of this.chipFilter) {
-            const response = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/ingridient/${this.ingridients[chip].id}`, { headers: { Authorization: `Bearer ${this.token}` } })
-            for (const idReceta of response.data) {
-              newRecipes.push(this.recipes.find(element => element.id == idReceta.idreceta));
-            }
+            ingridientQuery.push(this.ingridients[chip].idingrediente)
           }
-          this.recipes = newRecipes;
+          const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
+          this.recipes = responseFilter.data
         } catch (e) {
           alert(e);
         }
@@ -90,7 +94,7 @@
       try {
         const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
         this.recipes = responseAllRecipes.data;
-        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients`, { headers: { Authorization: `Bearer ${this.token}` } });
+        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/mostUsed`, { headers: { Authorization: `Bearer ${this.token}` } });
         this.ingridients = responseAllIngridients.data;
       } catch (e) {
         alert(e.response);
