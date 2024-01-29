@@ -1,16 +1,16 @@
 <template>
   <v-app>
-     <Transition name="login">
+    <Transition name="login">
     <v-app v-if="!token" transition="fade-transition">
       <Header :token="token"/>
       <v-main>
         <Login @emit-token="getToken" />
       </v-main>
     </v-app>
-     </Transition>
+    </Transition>
     <Transition  name="page">
     <v-app v-if="token" id="inspire" transition="fade-transition">
-      <Header :token="token" :congito="congito"/>
+      <Header :token="token" :congito="congito" :recipes="recipes"  :ingridients="ingridients"/>
       <v-main>
         <!--  -->
         <Body :token="token"/> 
@@ -27,6 +27,7 @@
 </script>
 
 <script>
+  import axios from "axios";
   import Footer from './components/Footer.vue'
   import Header from './components/Header.vue'
   import Body from './components/Body.vue'
@@ -35,7 +36,9 @@
     name: 'App',
     data: () => ({  
       token:"",
-      congito:null
+      congito:null,
+      recipes: [],
+      ingridients: []
     }),
     components: {
       Footer,
@@ -44,9 +47,13 @@
       Login
     },
     methods:{
-      getToken(tokenChild, congitoUser) {
+      async getToken(tokenChild, congitoUser) {
         this.congito= congitoUser
         this.token=tokenChild
+        const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
+        this.recipes = responseAllRecipes.data;
+        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList`, { headers: { Authorization: `Bearer ${this.token}` } });
+        this.ingridients = responseAllIngridients.data;
       }
     }
   }

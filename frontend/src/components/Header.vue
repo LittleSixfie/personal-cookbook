@@ -1,6 +1,6 @@
 <template>
-    <v-app-bar class="pa-3 bg-primary">
-        <v-app-bar-title>RecipeBook</v-app-bar-title>
+    <v-app-bar class="pa-3 bg-primary overflow-visible">
+        <v-app-bar-title >RecipeBook</v-app-bar-title>
         
         <template v-if="token" v-slot:append >
         <v-btn
@@ -12,6 +12,23 @@
         >
             <v-icon>mdi-exit-to-app</v-icon>
         </v-btn>
+        <v-btn
+            variant="elevated"
+            dark
+            class="mr-2"
+            icon
+            @click="dialogSearch = true"
+        >
+            <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+
+        <v-dialog
+            v-model="dialogSearch"
+            width="75%"
+            transition="dialog-bottom-transition"
+        >
+            <DialogSearch :token="token"  :recipes="recipes"  :ingridients="ingridients"></DialogSearch>
+        </v-dialog>
         <v-dialog
             v-model="dialog"
             fullscreen
@@ -99,14 +116,18 @@
     import FormCamera from './FormCamera.vue'
     import {CognitoUserPool,CognitoUser,} from 'amazon-cognito-identity-js';
     import axios from 'axios';
+    import DialogSearch from './DialogSearch.vue'
 
     export default {
         name: 'Header',
         isDark:false,
-        props: ['token', 'congito'],
+        props: ['token', 'congito', 'recipes', 'ingridients'],
         data: () => ({  
             dialog:false, 
             dialogCamera:false,
+            dialogSearch:false,
+            filteredRecipes:[],
+            search:'',
             rules: [
                 value => {
                     if (value) return true
@@ -140,6 +161,12 @@
                     },
                 });
                 
+            },
+            handleInput(){
+                this.filteredRecipes = this.recipes.filter(recipe => 
+                    recipe.title_name.toLowerCase().includes(this.search.toLowerCase())
+                )
+                if(this.search=="") this.filteredRecipes= []
             }
         }
     }

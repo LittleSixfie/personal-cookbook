@@ -113,7 +113,6 @@ import axios from "axios";
                 this.loading = true
                 try {
                     const responseRecipe = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/recipes/add`, {title_name: this.title_name, origin: this.origin, instructions: this.instructions}, { headers: { Authorization: `Bearer ${this.token}` } });
-                    console.log("RECETA ID PORFA",responseRecipe.data.rows[0].id)
 
                     const formData = new FormData();
                     formData.append('image', this.image[0]);
@@ -123,13 +122,10 @@ import axios from "axios";
                                 'Authorization': `Bearer ${this.token}`
                             },
                         });
-                    console.log("IMAGEN",responseImage)
                     await this.ingridientsList.forEach(async element => {
                         try{
                             const responseIngredient = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridients/add`, {nombre: element.ingridientName, unidades: element.measurement},  { headers: { Authorization: `Bearer ${this.token}` } });
-                            console.log("INGREDIENTE SUELTO", responseIngredient.data)
                             const responseListIngredients = await axios.post(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/add`, {idRecipe: responseRecipe.data.rows[0].id, idIngridient: responseIngredient.data.rows[0].id, quantity: element.quantity}, { headers: { Authorization: `Bearer ${this.token}` } });
-                            console.log("INGREDIENTE LISTA", responseListIngredients.data)
                         } catch(e) {
                             alert(e)
                         }
@@ -147,11 +143,9 @@ import axios from "axios";
                     measurement: "",
                     quantity: 0
                 });
-                console.log(this.ingridientsList)
             },
             removeRow(itemName) {
                 this.ingridientsList = this.ingridientsList.filter(item => item.ingridientName !== itemName);
-                console.log(this.ingridientsList)
                 this.id -= 1;
             
             },

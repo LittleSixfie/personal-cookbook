@@ -7,7 +7,7 @@
             :loading="loading"
             @click="openDialog" 
         >
-            Open Dialog
+            Open Recipe
             <v-dialog
                 v-model="dialog"
                 width="auto"
@@ -134,7 +134,6 @@
                         ingridient["name"] = responseIngridient.data[0].nombre
                     }
                     this.listIngridients = responseIngridientList.data
-                    console.log(this.listIngridients)
                 } catch (e) {
                     console.log("ERROR openDialog", e);
                 }
@@ -153,7 +152,7 @@
                         }
                     }
                     await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/recipes/${this.listIngridients[0].idreceta}`, { headers: { Authorization: `Bearer ${this.token}` } })
-                    this.callCallReset();
+                    if (this.callCallReset) this.callCallReset();
                 } catch (e) {
                     console.log("ERROR removeDialog", e);
                 }

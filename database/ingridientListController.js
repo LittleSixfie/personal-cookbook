@@ -21,7 +21,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes')
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -32,7 +32,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('SELECT idingrediente, nombre, COUNT(idingrediente) FROM lista_ingredientes, ingrediente WHERE idingrediente = ingrediente.id GROUP BY idingrediente, nombre ORDER BY COUNT DESC, nombre LIMIT 10;')
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -44,7 +44,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -56,7 +56,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idingrediente=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -68,7 +68,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('SELECT * FROM lista_ingredientes WHERE idreceta=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -81,7 +81,7 @@ const ingridientListController = {
             res.status(201)
             res.json(queryResult);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -94,7 +94,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('UPDATE lista_ingredientes SET salario = 50000 WHERE id_empleado = 100;', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -106,7 +106,7 @@ const ingridientListController = {
             const queryResult = await dbClient.query('DELETE FROM lista_ingredientes WHERE id=$1', [itemId])
             res.json(queryResult);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
