@@ -8,6 +8,9 @@
         <v-card-title> 
             {{recipe.title_name}}
         </v-card-title>
+        <v-card-subtitle> 
+            {{recipe.origin}}
+        </v-card-subtitle>
         <v-card-actions>
             <DialogRecipe :token="token" :recipe="recipe" :callCallReset="callReset" :image="cardImage"></DialogRecipe>
         </v-card-actions>
