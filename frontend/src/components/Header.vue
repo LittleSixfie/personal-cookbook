@@ -1,7 +1,31 @@
 <template>
-    <v-app-bar class="pa-3 bg-primary">
-        <v-app-bar-title>RecipeBook</v-app-bar-title>
-        
+    <v-app-bar class="pa-3 bg-primary overflow-visible">
+        <v-app-bar-title >RecipeBook</v-app-bar-title>
+        <v-container class="mr-2" color="grey-lighten-3" width="200px" v-if="token" style=" overflow-y:visible; display: flex; flex-direction:column" >
+            <v-col >
+                <v-row>
+                    <v-text-field
+                    variant="solo"
+                    label="Search recipes"
+                    append-inner-icon="mdi-magnify"
+                    hide-details
+                    clearable
+                    v-model="search"
+                    @input="handleInput"
+                    fixed
+                    ></v-text-field>
+                </v-row>
+                
+                <v-row>   
+                    <v-list v-if="filteredRecipes.length" >
+                        <v-list-item v-for="recipe in filteredRecipes" >
+                            <v-list-item-title>{{ recipe.title_name }}</v-list-item-title>
+                            <v-list-item-subtitle>{{ recipe.origin }}</v-list-item-subtitle>
+                        </v-list-item>
+                    </v-list>
+                </v-row>
+            </v-col>
+        </v-container>
         <template v-if="token" v-slot:append >
         <v-btn
             variant="elevated"
@@ -103,10 +127,13 @@
     export default {
         name: 'Header',
         isDark:false,
-        props: ['token', 'congito'],
+        props: ['token', 'congito', 'recipes', 'ingridients'],
         data: () => ({  
             dialog:false, 
             dialogCamera:false,
+            
+            filteredRecipes:[],
+            search:'',
             rules: [
                 value => {
                     if (value) return true
@@ -140,6 +167,12 @@
                     },
                 });
                 
+            },
+            handleInput(){
+                this.filteredRecipes = this.recipes.filter(recipe => 
+                    recipe.title_name.toLowerCase().includes(this.search.toLowerCase())
+                )
+                if(this.search=="") this.filteredRecipes= []
             }
         }
     }

@@ -94,8 +94,8 @@
       try {
         const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
         this.recipes = responseAllRecipes.data;
-        const responseAllIngridients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/mostUsed`, { headers: { Authorization: `Bearer ${this.token}` } });
-        this.ingridients = responseAllIngridients.data;
+        const responseMostUsedIngredients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/mostUsed`, { headers: { Authorization: `Bearer ${this.token}` } });
+        this.ingridients = responseMostUsedIngredients.data;
       } catch (e) {
         alert(e.response);
         this.errors.push(e);
