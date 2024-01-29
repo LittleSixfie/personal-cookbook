@@ -11,7 +11,7 @@
                       variant="solo-filled"
                       chips
                       multiple
-                      label="Filters"
+                      label="Filter by ingridient"
                       :items="ingridients.map(element => element.nombre)"
                       v-model="chipFilter"
                       :loading="loadingCombox"

@@ -7,7 +7,7 @@
             class="pa-2"
         >
         <v-text-field
-            label="Search recipes"
+            label="Search by recipe name"
             variant="outlined"
             append-inner-icon="mdi-magnify"
             hide-details
