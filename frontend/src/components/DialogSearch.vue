@@ -4,7 +4,7 @@
         <v-toolbar
           dark
           color="primary"
-          class="pa-1"
+          class="pa-2"
         >
         <v-text-field
             label="Search recipes"
@@ -15,7 +15,7 @@
             v-model="search"
             @input="handleInput"
             fixed
-            class="ma-3"
+            class="ma-1"
             ></v-text-field> 
         </v-toolbar>
         <v-row class="ma-1"> 

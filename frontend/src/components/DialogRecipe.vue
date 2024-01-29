@@ -7,7 +7,7 @@
             :loading="loading"
             @click="openDialog" 
         >
-            Open Dialog
+            Open Recipe
             <v-dialog
                 v-model="dialog"
                 width="auto"
