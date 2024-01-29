@@ -62,9 +62,8 @@ const recipeController = {
             if(itemId.split("_").length == 1) {
                 queryResult = await dbClient.query('SELECT idreceta,title_name,origin,recipe.id,instructions FROM lista_ingredientes,recipe WHERE idingrediente=$1 AND recipe.id=idreceta', [itemId])
             } else {
-                const formatedQuery=itemId.split("_").map(id => "idingrediente="+id).join(" OR ")
-                queryResult = await dbClient.query(`SELECT idreceta,title_name,origin,recipe.id,instructions FROM lista_ingredientes,recipe WHERE ${formatedQuery} AND recipe.id=idreceta group by idreceta,title_name,origin,recipe.id,idreceta,title_name,origin,recipe.id,instructions having count(*) > 1`)
-                
+                const formatedQuery=itemId.split("_").join(", ")
+                queryResult = await dbClient.query(`SELECT idreceta,title_name,origin,recipe.id,instructions FROM lista_ingredientes,recipe WHERE idingrediente IN (${formatedQuery}) AND recipe.id=idreceta group by idreceta,title_name,origin,recipe.id,idreceta,title_name,origin,recipe.id,instructions having count(*) > 1`)                
             }
             res.json(queryResult.rows);
         } catch (err) {

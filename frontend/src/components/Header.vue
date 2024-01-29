@@ -5,6 +5,15 @@
         <template v-if="token" v-slot:append >
         <v-btn
             variant="elevated"
+            icon
+            dark
+            class="mr-2"
+            @click="close" 
+        >
+            <v-icon>mdi-exit-to-app</v-icon>
+        </v-btn>
+        <v-btn
+            variant="elevated"
             dark
             class="mr-2"
             icon
@@ -18,17 +27,8 @@
             width="75%"
             transition="dialog-bottom-transition"
         >
-        <DialogSearch :token="token"  :recipes="recipes"  :ingridients="ingridients"></DialogSearch>
+            <DialogSearch :token="token"  :recipes="recipes"  :ingridients="ingridients"></DialogSearch>
         </v-dialog>
-        <v-btn
-            variant="elevated"
-            icon
-            dark
-            class="mr-2"
-            @click="close" 
-        >
-            <v-icon>mdi-exit-to-app</v-icon>
-        </v-btn>
         <v-dialog
             v-model="dialog"
             fullscreen
