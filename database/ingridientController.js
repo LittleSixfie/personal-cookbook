@@ -21,7 +21,7 @@ const ingridientController = {
             const queryResult = await dbClient.query('SELECT * FROM ingrediente')
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -33,7 +33,7 @@ const ingridientController = {
             const queryResult = await dbClient.query('SELECT * FROM ingrediente WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -45,7 +45,7 @@ const ingridientController = {
             
             res.json(queryResult.rows.map(element => element.enum_value));
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -58,7 +58,7 @@ const ingridientController = {
             res.status(201)
             res.json(queryResult);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
             if(err.code == 23505){
                 res.status(208)
                 res.json(await dbClient.query('SELECT id FROM ingrediente WHERE nombre=$1', [req.body['nombre']]))   
@@ -75,7 +75,7 @@ const ingridientController = {
             const queryResult = await dbClient.query('UPDATE ingrediente SET salario = 50000 WHERE id_empleado = 100;', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -87,7 +87,7 @@ const ingridientController = {
             const queryResult = await dbClient.query('DELETE FROM ingrediente WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }

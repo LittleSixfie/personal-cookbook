@@ -20,7 +20,7 @@ const recipeController = {
             const queryResult = await dbClient.query('SELECT recipe.id,title_name,instructions,origin origin FROM recipe')
             res.send(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -32,7 +32,7 @@ const recipeController = {
             const queryResult = await dbClient.query('SELECT recipe.id,title_name,instructions,origin FROM recipe WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -45,7 +45,7 @@ const recipeController = {
             res.status(201)
             res.json(queryResult);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
             if(err.code == 23505){
                 res.status(400)
                 res.send(`The recipe already exits with id: ${(await dbClient.query('SELECT id FROM recipe WHERE title_name=$1', [req.body['title_name']])).rows[0].id}`)   
@@ -68,7 +68,7 @@ const recipeController = {
             }
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -81,7 +81,7 @@ const recipeController = {
             const queryResult = await dbClient.query('UPDATE recipe SET salario = 50000 WHERE id_empleado = 100;', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }
@@ -93,7 +93,7 @@ const recipeController = {
             const queryResult = await dbClient.query('DELETE FROM recipe WHERE id=$1', [itemId])
             res.json(queryResult.rows);
         } catch (err) {
-            console.error(err);
+            console.error(err, new Date() );
         } finally {
             await dbClient.end()
         }

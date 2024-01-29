@@ -1,35 +1,22 @@
 <template>
     <v-main>      
       <v-row justify="center">
-        <v-col cols="11">
-          <v-sheet class="ma-0 pa-0" elevation="5" rounded="xl" fluid>
-              <v-row class="ma-0 pa-0" align="center" justify="center"  >
-                <v-col cols="12" sm="9" md="10" lg="11">
-                  
-                    <v-chip-group
-                      class=""
-                      multiple
-                      v-model="chipFilter"
-                    >
-                      <v-chip
-                        v-for="n in ingridients"
-                        :key="n"
-                        filter
-                      > {{n.nombre}}</v-chip>
-                    </v-chip-group>
+        <v-col cols="11" justify="center">
+          <v-sheet class="pa-" elevation="5" rounded="xl" fluid color="primary">
+              
                 
-                </v-col>
-                <v-col cols="12" sm="3" md="2" lg="1" class=" bg-primary rounded-xl fill-height" >
-                    <v-container>
-                      <v-btn class="ml-1" @click="filter" icon >
-                        <v-icon>mdi-filter-check</v-icon>
-                      </v-btn>
-                      <v-btn class="ma-1" icon @click="reset">
-                        <v-icon>mdi-reload</v-icon>
-                      </v-btn>
-                    </v-container>
-                </v-col>
-              </v-row>
+                    <v-combobox
+                      class="px-4 pt-5"
+                      clearable
+                      variant="solo-filled"
+                      chips
+                      multiple
+                      label="Filters"
+                      :items="ingridients.map(element => element.nombre)"
+                      v-model="chipFilter"
+                      :loading="loadingCombox"
+                    ></v-combobox>
+                
             </v-sheet>
         </v-col>
       </v-row>
@@ -60,42 +47,55 @@
         ingridients: [],
         chipFilter: [],
         errors: [],
+        loadingCombox: false,
       };
     },
     components: {
       CardRecipe
     },
     methods: {
-      async filter() {
-        try {
-          //TODO: Multivalue aplicar
-          const ingridientQuery = [];
-          for (const chip of this.chipFilter) {
-            ingridientQuery.push(this.ingridients[chip].idingrediente)
-          }
-          const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
-          this.recipes = responseFilter.data
-        } catch (e) {
-          alert(e);
-        }
-      },
+      
       async reset() {
         try {
           const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
           this.recipes = responseAllRecipes.data;
-          this.chipFilter = [];
         } catch (e) {
           alert(e.response);
           this.errors.push(e);
         }
       }
     },
+    watch: {
+      async chipFilter(newValue, oldValue) {
+        this.loadingCombox=true
+        if(this.chipFilter.length == 0){
+          this.loadingCombox=false
+          this.reset()
+          return
+        }  
+        try {
+          console.log()
+          const ingridientQuery = [];
+          for (const chip of this.chipFilter) {
+            console.log(chip)
+            ingridientQuery.push( this.ingridients.find(element => element.nombre == chip ).id)
+            console.log(ingridientQuery)
+          }
+          const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
+          this.recipes = responseFilter.data
+        } catch (e) {
+          alert(e);
+        }
+        this.loadingCombox=false
+      }
+    },
     async beforeMount() {
       try {
         const responseAllRecipes = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes`, { headers: { Authorization: `Bearer ${this.token}` } })
         this.recipes = responseAllRecipes.data;
-        const responseMostUsedIngredients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridientsList/mostUsed`, { headers: { Authorization: `Bearer ${this.token}` } });
+        const responseMostUsedIngredients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/`, { headers: { Authorization: `Bearer ${this.token}` } });
         this.ingridients = responseMostUsedIngredients.data;
+        console.log(this.ingridients)
       } catch (e) {
         alert(e.response);
         this.errors.push(e);

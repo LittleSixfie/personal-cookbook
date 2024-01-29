@@ -2,9 +2,9 @@
 <template>
     <v-card>
         <v-toolbar
-          dark
-          color="primary"
-          class="pa-2"
+            dark
+            color="primary"
+            class="pa-2"
         >
         <v-text-field
             label="Search recipes"
