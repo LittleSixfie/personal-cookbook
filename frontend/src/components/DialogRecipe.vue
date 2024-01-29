@@ -153,7 +153,7 @@
                         }
                     }
                     await axios.delete(`http://${process.env.VUE_APP_HOST}:3000/recipes/${this.listIngridients[0].idreceta}`, { headers: { Authorization: `Bearer ${this.token}` } })
-                    this.callCallReset();
+                    if (this.callCallReset) this.callCallReset();
                 } catch (e) {
                     console.log("ERROR removeDialog", e);
                 }

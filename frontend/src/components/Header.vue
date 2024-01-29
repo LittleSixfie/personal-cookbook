@@ -1,32 +1,25 @@
 <template>
     <v-app-bar class="pa-3 bg-primary overflow-visible">
         <v-app-bar-title >RecipeBook</v-app-bar-title>
-        <v-container class="mr-2" color="grey-lighten-3" width="200px" v-if="token" style=" overflow-y:visible; display: flex; flex-direction:column" >
-            <v-col >
-                <v-row>
-                    <v-text-field
-                    variant="solo"
-                    label="Search recipes"
-                    append-inner-icon="mdi-magnify"
-                    hide-details
-                    clearable
-                    v-model="search"
-                    @input="handleInput"
-                    fixed
-                    ></v-text-field>
-                </v-row>
-                
-                <v-row>   
-                    <v-list v-if="filteredRecipes.length" >
-                        <v-list-item v-for="recipe in filteredRecipes" >
-                            <v-list-item-title>{{ recipe.title_name }}</v-list-item-title>
-                            <v-list-item-subtitle>{{ recipe.origin }}</v-list-item-subtitle>
-                        </v-list-item>
-                    </v-list>
-                </v-row>
-            </v-col>
-        </v-container>
+        
         <template v-if="token" v-slot:append >
+        <v-btn
+            variant="elevated"
+            dark
+            class="mr-2"
+            icon
+            @click="dialogSearch = true"
+        >
+            <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+
+        <v-dialog
+            v-model="dialogSearch"
+            width="75%"
+            transition="dialog-bottom-transition"
+        >
+        <DialogSearch :token="token"  :recipes="recipes"  :ingridients="ingridients"></DialogSearch>
+        </v-dialog>
         <v-btn
             variant="elevated"
             icon
@@ -123,6 +116,7 @@
     import FormCamera from './FormCamera.vue'
     import {CognitoUserPool,CognitoUser,} from 'amazon-cognito-identity-js';
     import axios from 'axios';
+    import DialogSearch from './DialogSearch.vue'
 
     export default {
         name: 'Header',
@@ -131,7 +125,7 @@
         data: () => ({  
             dialog:false, 
             dialogCamera:false,
-            
+            dialogSearch:false,
             filteredRecipes:[],
             search:'',
             rules: [
