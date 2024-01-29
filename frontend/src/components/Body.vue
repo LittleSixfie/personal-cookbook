@@ -74,12 +74,9 @@
           return
         }  
         try {
-          console.log()
           const ingridientQuery = [];
           for (const chip of this.chipFilter) {
-            console.log(chip)
             ingridientQuery.push( this.ingridients.find(element => element.nombre == chip ).id)
-            console.log(ingridientQuery)
           }
           const responseFilter = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/recipes/filter/${ingridientQuery.join("_")}`, { headers: { Authorization: `Bearer ${this.token}` } })
           this.recipes = responseFilter.data
@@ -95,7 +92,7 @@
         this.recipes = responseAllRecipes.data;
         const responseMostUsedIngredients = await axios.get(`http://${process.env.VUE_APP_HOST}:3000/ingridients/`, { headers: { Authorization: `Bearer ${this.token}` } });
         this.ingridients = responseMostUsedIngredients.data;
-        console.log(this.ingridients)
+
       } catch (e) {
         alert(e.response);
         this.errors.push(e);

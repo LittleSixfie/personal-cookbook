@@ -134,7 +134,6 @@
                         ingridient["name"] = responseIngridient.data[0].nombre
                     }
                     this.listIngridients = responseIngridientList.data
-                    console.log(this.listIngridients)
                 } catch (e) {
                     console.log("ERROR openDialog", e);
                 }
