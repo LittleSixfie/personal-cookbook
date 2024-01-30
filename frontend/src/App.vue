@@ -12,7 +12,6 @@
     <v-app v-if="token" id="inspire" transition="fade-transition">
       <Header :token="token" :congito="congito" :recipes="recipes"  :ingridients="ingridients"/>
       <v-main>
-        <!--  -->
         <Body :token="token"/> 
       </v-main>
     </v-app>
