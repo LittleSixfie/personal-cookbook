@@ -1,10 +1,8 @@
 <template>
-    <v-main>      
+    <v-main style="--v-layout-top: 46px;">      
       <v-row justify="center">
         <v-col cols="11" justify="center">
           <v-sheet class="pa-" elevation="5" rounded="xl" fluid color="primary">
-              
-                
                     <v-combobox
                       class="px-4 pt-5"
                       clearable
@@ -20,7 +18,7 @@
             </v-sheet>
         </v-col>
       </v-row>
-        <v-row class="ma-10">
+        <v-row class="mx-10">
           <v-col
             v-for="recipe in recipes"
             :key="recipe"
