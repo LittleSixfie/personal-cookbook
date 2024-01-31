@@ -71,14 +71,13 @@
             onSubmit () {       
                 this.loading = true
                 try {
-                    console.log(process.env)
                     var authenticationDetails = new AuthenticationDetails({
                         Username: this.user,
                         Password: this.password,
                     });
                     var poolData = {
-                        UserPoolId: process.env.COGNITO_POOL_ID, // Your user pool id here
-                        ClientId: process.env.COGNITO_CLIENT_ID, // Your client id here
+                        UserPoolId: process.env.VUE_APP_COGNITO_POOL_ID, // Your user pool id here
+                        ClientId: process.env.VUE_APP_COGNITO_CLIENT_ID, // Your client id here
                     };
                     var userPool = new CognitoUserPool(poolData);
                     var userData = {
