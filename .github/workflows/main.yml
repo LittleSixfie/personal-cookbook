@@ -51,7 +51,7 @@ jobs:
       - name: Build & Deploy
         env:
             SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{ secrets.VUE_APP_HOST }}
+            HOSTNAME: ${{ secrets.AWS_DOMAINAME_SERVER }}
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
