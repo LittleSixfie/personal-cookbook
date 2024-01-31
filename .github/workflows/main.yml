@@ -46,14 +46,16 @@ jobs:
     name: Deploy to EC2
     runs-on: ubuntu-latest
     environment: master 
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      HOSTNAME: ${{ secrets.AWS_DOMAINAME_SERVER }}
     steps:
       - uses: actions/checkout@v2 
-      - name: Build & Deploy
-        env:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{ secrets.AWS_DOMAINAME_SERVER }}
+      - name: Load Key
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+      - name: ssh
+        run: |
           ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
               # Now we have got the access of EC2 and we will start the deploy .
               cd /home/ec2-user/personal-cookbook &&
