@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v2 
       - name: Load Key
         run: |
-          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo "$SSH_PRIVATE_KEY" > private_key && chmod 400 private_key
       - name: ssh
         run: |
           ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
