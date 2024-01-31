@@ -5,7 +5,7 @@ on:
     branches:
     - master
 jobs:
-  Despliegue:
+  Despliegue-Front:
     runs-on: ubuntu-latest
     environment: master 
     env:
@@ -42,4 +42,24 @@ jobs:
           folder: frontend/dist
           bucket: ${{ secrets.S3_BUCKET }}
           bucket-region: eu-central-1
-      
+  Deploy-EC2:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    environment: master 
+    steps:
+      - uses: actions/checkout@v2 
+      - name: Build & Deploy
+        env:
+            SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+            HOSTNAME: ${{ secrets.VUE_APP_HOST }}
+        run: |
+          echo "$SSH_PUBLIC_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ec2-user@${HOSTNAME} '
+              # Now we have got the access of EC2 and we will start the deploy .
+              cd /home/ec2-user/personal-cookbook &&
+              git checkout master &&
+              git fetch --all &&
+              git reset --hard origin/master &&
+              git pull origin master &&
+              pm2 restart all
+              '
