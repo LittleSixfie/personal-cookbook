@@ -12,7 +12,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const app = express();
 
-app.use(cors({ origin: "http://web.server.recipebook.s3-website.eu-central-1.amazonaws.com"}));
+app.use(cors({origin: '*'}));
 
 const middleware = [auth, express.json()]
 app.use('/', middleware, routerDefault);
