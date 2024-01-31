@@ -71,7 +71,6 @@
             onSubmit () {       
                 this.loading = true
                 try {
-                    console.log(process.env)
                     var authenticationDetails = new AuthenticationDetails({
                         Username: this.user,
                         Password: this.password,
