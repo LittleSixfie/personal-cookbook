@@ -25,8 +25,9 @@ jobs:
         working-directory: ./frontend
         run: |
           touch .env
-          echo COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID >> .env
-          echo COGNITO_POOL_ID=$COGNITO_POOL_ID >> .env
+          echo VUE_APP_COGNITO_CLIENT_ID=$COGNITO_CLIENT_ID >> .env
+          
+          echo VUE_APP_COGNITO_POOL_ID=$COGNITO_POOL_ID >> .env
           echo VUE_APP_HOST=$VUE_APP_HOST >> .env
       - name: NPM install
         run: npm install
